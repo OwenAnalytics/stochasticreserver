@@ -1,4 +1,4 @@
-if(model=="CapeCod") {
+#if(model=="CapeCod") {
   #
   # g - Assumed loss emergence model, a function of the parameters a.
   # Note g must be matrix-valued with 10 rows and 10 columns
@@ -68,5 +68,4 @@ if(model=="CapeCod") {
   ww=t(array(xx,c(10,10)))
   uv=ptd/((10==rowSums(msk))+(10>rowSums(msk))*rowSums(msk*ww))
   a0=c((uv[1]*xx[1]),(uv[2:10]/uv[1]),(xx[2:10]/xx[1]))
-}
-
+#}

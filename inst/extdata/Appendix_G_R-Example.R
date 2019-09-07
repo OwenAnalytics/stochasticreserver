@@ -556,6 +556,7 @@ sss=na.omit(data.frame(x=c(log(E^2)),y=c(yyy)))
 ttt=array(coef(lm(sss$y~sss$x)))[1:2]
 a0=c(a0,ttt)
 
+set.seed(1) # to check reproducibility with new code
 max=list(iter.max=10000,eval.max=10000)
 
 # Actual minimization
