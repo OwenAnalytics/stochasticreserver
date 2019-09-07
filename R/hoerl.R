@@ -1,11 +1,19 @@
-#if (model=="Hoerl") {
+#' Create list for Generalized Hoerl Curve Model with trend
 #
-# g itself
-# Basic design is for g to be a function of a single parameter vector, however
-# in the simulations it is necessary to work on a matrix of parameters, one
-# row for each simulated parameter, so g.obj must be flexible enough to handle
-# both.
-# Here g.obj is Wright's operational time model with trend added
+#' g itself
+#' Basic design is for g to be a function of a single parameter vector, however
+#' in the simulations it is necessary to work on a matrix of parameters, one
+#' row for each simulated parameter, so g.obj must be flexible enough to handle
+#' both.
+#' Here g.obj is Wright's operational time model with trend added
+#' @param theta do not know
+#' @param tau do not know
+#' @param B0 development triangle
+#' @param ptd do not know
+#' @param msk mask for triangle
+#'
+#' @importFrom stats coef lm na.omit
+#' @import abind
 #' @export
 hoerl <- function(tau, B0, ptd, msk) {
   g.obj = function(theta) {

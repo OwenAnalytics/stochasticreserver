@@ -1,14 +1,22 @@
-#if (model=="Berquist") {
-#
-# g - Assumed loss emergence model, a function of the parameters a.
-# Note g must be matrix-valued with 10 rows and 10 columns
-
-# g itself
-# Basic design is for g to be a function of a single parameter vector, however
-# in the simulations it is necessary to work on a matrix of parameters, one
-# row for each simulated parameter, so g.obj must be flexible enough to handle
-# both.
-# Here g.obj is the Berquist-Sherman incremental severity model
+#' Create list for Berquist-Sherman incremental severity model
+#'
+#' g - Assumed loss emergence model, a function of the parameters a.
+#' Note g must be matrix-valued with 10 rows and 10 columns
+#'
+#' g itself
+#' Basic design is for g to be a function of a single parameter vector, however
+#' in the simulations it is necessary to work on a matrix of parameters, one
+#' row for each simulated parameter, so g.obj must be flexible enough to handle
+#' both.
+#' Here g.obj is the Berquist-Sherman incremental severity model
+#' @param theta do not know
+#' @param tau do not know
+#' @param B0 development triangle
+#' @param ptd do not know
+#' @param msk mask for triangle
+#'
+#' @importFrom stats coef lm na.omit
+#' @import abind
 #' @export
 berquist <- function(tau, B0, ptd, msk) {
   g.obj = function(theta) {

@@ -1,12 +1,38 @@
 Package: stochasticreserver
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Flexible Framework for Stochastic Reserving Models
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Roger Hayne
+Maintainer: R. Mark Sharp <rmsharp@me.com>
+Authors@R: c(
+    person("Roger", "Hayne", role = c("aut")),
+    person("R. Mark", "Sharp", email = "rmsharp@me.com", , 
+    role = c("ctb", "cre")))
+Description: Maximum likelihood estimators provide a powerful statistical tool. 
+  In this paper we directly deal with non-linear reserving models, without the 
+  need to transform those models to make them tractable for linear or generalized 
+  linear methods. We also show how the same general approach can be easily 
+  adapted to provide estimates for a very wide range of reserving methods and 
+  models, making use of the same framework, and even much of the same computer 
+  code. We focus on the triangle of incremental average costs, and show how five
+  common methods can be set in a stochastic framework.
+DisplayMode: Showcase
+Depends:
+    R (>= 3.5.0)
+Imports:
+   mvtnorm,
+   MASS,
+   abind,
+   stats,
+   utils
+Suggests:
+    covr,
+    knitr,
+    pkgdown,
+    roxygen2 (>= 6.0.0),
+    testthat
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
+VignetteBuilder: knitr

@@ -1,0 +1,787 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Example Stochastic Reserving},
+            pdfauthor={Roger Hayne},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Example Stochastic Reserving}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Roger Hayne}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{9/6/2019}
+
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(mvtnorm)}
+\KeywordTok{library}\NormalTok{(MASS)}
+\KeywordTok{library}\NormalTok{(abind)}
+\KeywordTok{library}\NormalTok{(stochasticreserver)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{initialize-triangle}{%
+\subsection{Initialize Triangle}\label{initialize-triangle}}
+
+Input (B0) is a development array of cumulative averages with a the
+exposures (claims) used in the denominator appended as the last column.
+Assumption is for the same development increments as exposure increments
+and that all development lags with no development have \# been removed.
+Data elements that are not available are indicated as such. This should
+work (but not tested for) just about any subset of an upper triangular
+data matrix.\\
+Another requirement of this code is that the matrix contain no columns
+that are all zero.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{B0 =}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\FloatTok{670.25868}\NormalTok{,}\FloatTok{1480.24821}\NormalTok{,}\FloatTok{1938.53579}\NormalTok{,}\FloatTok{2466.25469}\NormalTok{,}\FloatTok{2837.84888}\NormalTok{,}\FloatTok{3003.52391}\NormalTok{,}
+            \FloatTok{3055.38674}\NormalTok{,}\FloatTok{3132.93838}\NormalTok{,}\FloatTok{3141.18638}\NormalTok{,}\FloatTok{3159.72524}\NormalTok{,}
+            \FloatTok{767.98833}\NormalTok{,}\FloatTok{1592.50266}\NormalTok{,}\FloatTok{2463.79447}\NormalTok{,}\FloatTok{3019.71976}\NormalTok{,}\FloatTok{3374.72689}\NormalTok{,}\FloatTok{3553.61387}\NormalTok{,}\FloatTok{3602.27898}\NormalTok{,}
+            \FloatTok{3627.28386}\NormalTok{,}\FloatTok{3645.5656}\NormalTok{,}\OtherTok{NA}\NormalTok{,}
+            \FloatTok{740.57952}\NormalTok{,}\FloatTok{1615.79681}\NormalTok{,}\FloatTok{2345.85028}\NormalTok{,}\FloatTok{2910.52511}\NormalTok{,}\FloatTok{3201.5226}\NormalTok{,}\FloatTok{3417.71335}\NormalTok{,}\FloatTok{3506.58672}\NormalTok{,}
+            \FloatTok{3529.00243}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}
+            \FloatTok{862.11956}\NormalTok{,}\FloatTok{1754.90405}\NormalTok{,}\FloatTok{2534.77727}\NormalTok{,}\FloatTok{3270.85361}\NormalTok{,}\FloatTok{3739.88962}\NormalTok{,}\FloatTok{4003.00219}\NormalTok{,}\FloatTok{4125.30694}\NormalTok{,}
+            \OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}
+            \FloatTok{840.94172}\NormalTok{,}\FloatTok{1859.02531}\NormalTok{,}\FloatTok{2804.54535}\NormalTok{,}\FloatTok{3445.34665}\NormalTok{,}\FloatTok{3950.47098}\NormalTok{,}\FloatTok{4185.95298}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}
+            \FloatTok{848.00496}\NormalTok{,}\FloatTok{2052.922}\NormalTok{,}\FloatTok{3076.13789}\NormalTok{,}\FloatTok{3861.03111}\NormalTok{,}\FloatTok{4351.57694}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}
+            \FloatTok{901.77403}\NormalTok{,}\FloatTok{1927.88718}\NormalTok{,}\FloatTok{3003.58919}\NormalTok{,}\FloatTok{3881.41744}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}
+            \FloatTok{935.19866}\NormalTok{,}\FloatTok{2103.97736}\NormalTok{,}\FloatTok{3181.75054}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}
+            \FloatTok{759.32467}\NormalTok{,}\FloatTok{1584.91057}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}
+            \FloatTok{723.30282}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{,}\OtherTok{NA}\NormalTok{),}\DecValTok{10}\NormalTok{,}\DecValTok{10}\NormalTok{,}\DataTypeTok{byrow =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{dnom =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\FloatTok{39161.}\NormalTok{,}\FloatTok{38672.4628}\NormalTok{,}\FloatTok{41801.048}\NormalTok{,}\FloatTok{42263.2794}\NormalTok{,}\FloatTok{41480.8768}\NormalTok{,}\FloatTok{40214.3872}\NormalTok{,}\FloatTok{43598.5056}\NormalTok{,}
+       \FloatTok{42118.324}\NormalTok{,}\FloatTok{43479.4248}\NormalTok{,}\FloatTok{49492.4106}\NormalTok{)}
+
+\CommentTok{# Identify model to be used}
+\CommentTok{#   Berquist for the Berquist-Sherman Incremental Severity}
+\CommentTok{#   CapeCod for the Cape Cod}
+\CommentTok{#   Hoerl for the Generalized Hoerl Curve Model with trend}
+\CommentTok{#   Wright for the Generalized Hoerl Curve with individual accident year levels}
+\CommentTok{#   Chain for the Chain Ladder model}
+\CommentTok{#model = "Berquist"}
+\CommentTok{#model = "CapeCod"}
+\NormalTok{model =}\StringTok{ "Hoerl"}
+\CommentTok{#model = "Wright"}
+\CommentTok{#model = "Chain"}
+\CommentTok{# Toggle graphs off if desired}
+\NormalTok{graphs =}\StringTok{ }\OtherTok{TRUE}
+
+\CommentTok{# Toggle simulations off if desired}
+\NormalTok{simulation =}\StringTok{ }\OtherTok{TRUE}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Set tau to have columns with entries 1 through 10}
+\NormalTok{tau =}\StringTok{ }\KeywordTok{t}\NormalTok{(}\KeywordTok{array}\NormalTok{((}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{)))}
+
+\CommentTok{# Calculate incremental average matrix}
+\NormalTok{A0 =}\StringTok{ }\KeywordTok{cbind}\NormalTok{(B0[, }\DecValTok{1}\NormalTok{], (B0[, (}\DecValTok{2}\OperatorTok{:}\DecValTok{10}\NormalTok{)] }\OperatorTok{+}\StringTok{ }\DecValTok{0} \OperatorTok{*}\StringTok{ }\NormalTok{B0[, (}\DecValTok{1}\OperatorTok{:}\DecValTok{9}\NormalTok{)]) }\OperatorTok{-}
+\StringTok{             }\NormalTok{(B0[, (}\DecValTok{1}\OperatorTok{:}\DecValTok{9}\NormalTok{)] }\OperatorTok{+}\StringTok{ }\DecValTok{0} \OperatorTok{*}\StringTok{ }\NormalTok{B0[, (}\DecValTok{2}\OperatorTok{:}\DecValTok{10}\NormalTok{)]))}
+
+\CommentTok{# Generate a matrix to reflect exposure count in the variance structure}
+\NormalTok{logd =}\StringTok{ }\KeywordTok{log}\NormalTok{(}\KeywordTok{matrix}\NormalTok{(dnom, }\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{))}
+
+\CommentTok{# Set up matrix of rows and columns, makes later calculations simpler}
+\NormalTok{rowNum =}\StringTok{ }\KeywordTok{row}\NormalTok{(A0)}
+\NormalTok{colNum =}\StringTok{ }\KeywordTok{col}\NormalTok{(A0)}
+
+\CommentTok{# msk is a mask matrix of allowable data, upper triangular assuming same}
+\CommentTok{# development increments as exposure increments, msn picks off the first}
+\CommentTok{# forecast diagonal, msd picks off the to date diagonal}
+\NormalTok{msk =}\StringTok{ }\NormalTok{(}\DecValTok{10} \OperatorTok{-}\StringTok{ }\NormalTok{rowNum) }\OperatorTok{>=}\StringTok{ }\NormalTok{colNum }\OperatorTok{-}\StringTok{ }\DecValTok{1}
+\NormalTok{msn =}\StringTok{ }\NormalTok{(}\DecValTok{10} \OperatorTok{-}\StringTok{ }\NormalTok{rowNum) }\OperatorTok{==}\StringTok{ }\NormalTok{colNum }\OperatorTok{-}\StringTok{ }\DecValTok{2}
+\NormalTok{msd =}\StringTok{ }\NormalTok{(}\DecValTok{10} \OperatorTok{-}\StringTok{ }\NormalTok{rowNum) }\OperatorTok{==}\StringTok{ }\NormalTok{colNum }\OperatorTok{-}\StringTok{ }\DecValTok{1}
+
+\CommentTok{# Amount paid to date}
+\NormalTok{ptd =}\StringTok{ }\KeywordTok{rowSums}\NormalTok{(B0 }\OperatorTok{*}\StringTok{ }\NormalTok{msd, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{start-of-model-specific-code}{%
+\subsection{START OF MODEL SPECIFIC
+CODE}\label{start-of-model-specific-code}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \ControlFlowTok{if}\NormalTok{ (model }\OperatorTok{==}\StringTok{ "Berquist"}\NormalTok{) \{}
+\NormalTok{    model_lst <-}\StringTok{ }\KeywordTok{berquist}\NormalTok{(tau, B0, ptd, msk)}
+\NormalTok{  \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{ (model }\OperatorTok{==}\StringTok{ "CapeCod"}\NormalTok{) \{}
+\NormalTok{    model_lst <-}\StringTok{ }\KeywordTok{capecod}\NormalTok{(tau, B0, ptd, msk)}
+\NormalTok{  \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{ (model }\OperatorTok{==}\StringTok{ "Hoerl"}\NormalTok{) \{}
+\NormalTok{    model_lst <-}\StringTok{ }\KeywordTok{hoerl}\NormalTok{(tau, B0, ptd, msk)}
+\NormalTok{  \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{ (model }\OperatorTok{==}\StringTok{ "Wright"}\NormalTok{) \{}
+\NormalTok{    model_lst <-}\StringTok{ }\KeywordTok{wright}\NormalTok{(tau, B0, ptd, msk)}
+\NormalTok{  \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{ (model }\OperatorTok{==}\StringTok{ "Chain"}\NormalTok{) \{}
+\NormalTok{    model_lst <-}\StringTok{ }\KeywordTok{chain}\NormalTok{(tau, B0, ptd, msk)}
+\NormalTok{  \}}
+\NormalTok{g.obj <-}\StringTok{ }\NormalTok{model_lst}\OperatorTok{$}\NormalTok{g.obj}
+\NormalTok{g.grad <-}\StringTok{ }\NormalTok{model_lst}\OperatorTok{$}\NormalTok{g.grad}
+\NormalTok{g.hess <-}\StringTok{ }\NormalTok{model_lst}\OperatorTok{$}\NormalTok{g.hess}
+\NormalTok{a0 <-}\StringTok{ }\NormalTok{model_lst}\OperatorTok{$}\NormalTok{a0}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{negative-loglikelihood-function-to-be-minimized}{%
+\subsection{Negative Loglikelihood Function to be
+Minimized}\label{negative-loglikelihood-function-to-be-minimized}}
+
+Note that the general form of the model has parameters in addition to
+those in the loss model, namely the power for the variance and the
+constant of proprtionality that varies by column. So if the original
+model has k parameters with 10 columns of data, the total objective
+function has k+11 parameters
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{l.obj =}\StringTok{ }\ControlFlowTok{function}\NormalTok{(a, A) \{}
+\NormalTok{  npar =}\StringTok{ }\KeywordTok{length}\NormalTok{(a) }\OperatorTok{-}\StringTok{ }\DecValTok{2}
+\NormalTok{  e =}\StringTok{ }\KeywordTok{g.obj}\NormalTok{(a[}\DecValTok{1}\OperatorTok{:}\NormalTok{npar])}
+\NormalTok{  v =}\StringTok{ }\KeywordTok{exp}\NormalTok{(}\OperatorTok{-}\KeywordTok{outer}\NormalTok{(logd[, }\DecValTok{1}\NormalTok{], }\KeywordTok{rep}\NormalTok{(a[npar }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{], }\DecValTok{10}\NormalTok{), }\StringTok{"-"}\NormalTok{)) }\OperatorTok{*}\StringTok{ }\NormalTok{(e }\OperatorTok{^}\StringTok{ }\DecValTok{2}\NormalTok{) }\OperatorTok{^}\StringTok{ }\NormalTok{a[npar }\OperatorTok{+}
+\StringTok{                                                                        }\DecValTok{2}\NormalTok{]}
+\NormalTok{  t1 =}\StringTok{ }\KeywordTok{log}\NormalTok{(}\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{pi }\OperatorTok{*}\StringTok{ }\NormalTok{v) }\OperatorTok{/}\StringTok{ }\DecValTok{2}
+\NormalTok{  t2 =}\StringTok{ }\NormalTok{(A }\OperatorTok{-}\StringTok{ }\NormalTok{e) }\OperatorTok{^}\StringTok{ }\DecValTok{2} \OperatorTok{/}\StringTok{ }\NormalTok{(}\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{v)}
+  \KeywordTok{sum}\NormalTok{(t1 }\OperatorTok{+}\StringTok{ }\NormalTok{t2, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{\}}
+\CommentTok{# Gradient of the objective function}
+\NormalTok{l.grad =}\StringTok{ }\ControlFlowTok{function}\NormalTok{(a, A) \{}
+\NormalTok{  npar =}\StringTok{ }\KeywordTok{length}\NormalTok{(a) }\OperatorTok{-}\StringTok{ }\DecValTok{2}
+\NormalTok{  p =}\StringTok{ }\NormalTok{a[npar }\OperatorTok{+}\StringTok{ }\DecValTok{2}\NormalTok{]}
+\NormalTok{  Av =}\StringTok{ }\KeywordTok{aperm}\NormalTok{(}\KeywordTok{array}\NormalTok{(A, }\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{, npar)), }\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\NormalTok{  e =}\StringTok{ }\KeywordTok{g.obj}\NormalTok{(a[}\DecValTok{1}\OperatorTok{:}\NormalTok{npar])}
+\NormalTok{  ev =}\StringTok{ }\KeywordTok{aperm}\NormalTok{(}\KeywordTok{array}\NormalTok{(e, }\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{, npar)), }\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\NormalTok{  v =}\StringTok{ }\KeywordTok{exp}\NormalTok{(}\OperatorTok{-}\KeywordTok{outer}\NormalTok{(logd[, }\DecValTok{1}\NormalTok{], }\KeywordTok{rep}\NormalTok{(a[npar }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{], }\DecValTok{10}\NormalTok{), }\StringTok{"-"}\NormalTok{)) }\OperatorTok{*}\StringTok{ }\NormalTok{(e }\OperatorTok{^}\StringTok{ }\DecValTok{2}\NormalTok{) }\OperatorTok{^}\StringTok{ }\NormalTok{p}
+\NormalTok{  vv =}\StringTok{ }\KeywordTok{aperm}\NormalTok{(}\KeywordTok{array}\NormalTok{(v, }\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{, npar)), }\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\NormalTok{  dt =}\StringTok{ }\KeywordTok{rowSums}\NormalTok{(}\KeywordTok{g.grad}\NormalTok{(a[}\DecValTok{1}\OperatorTok{:}\NormalTok{npar]) }\OperatorTok{*}\StringTok{ }\NormalTok{((p }\OperatorTok{/}\StringTok{ }\NormalTok{ev) }\OperatorTok{+}\StringTok{ }\NormalTok{(ev }\OperatorTok{-}\StringTok{ }\NormalTok{Av) }\OperatorTok{/}\StringTok{ }\NormalTok{vv }\OperatorTok{-}\StringTok{ }\NormalTok{p }\OperatorTok{*}\StringTok{ }\NormalTok{(Av }\OperatorTok{-}
+\StringTok{                                                                       }\NormalTok{ev) }\OperatorTok{^}\StringTok{ }\DecValTok{2} \OperatorTok{/}\StringTok{ }\NormalTok{(vv }\OperatorTok{*}\StringTok{ }\NormalTok{ev)),}
+               \DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{,}
+               \DataTypeTok{dims =} \DecValTok{1}\NormalTok{)}
+\NormalTok{  yy =}\StringTok{ }\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{(A }\OperatorTok{-}\StringTok{ }\NormalTok{e) }\OperatorTok{^}\StringTok{ }\DecValTok{2} \OperatorTok{/}\StringTok{ }\NormalTok{v}
+\NormalTok{  dk =}\StringTok{ }\KeywordTok{sum}\NormalTok{(yy }\OperatorTok{/}\StringTok{ }\DecValTok{2}\NormalTok{, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{  dp =}\StringTok{ }\KeywordTok{sum}\NormalTok{(yy }\OperatorTok{*}\StringTok{ }\KeywordTok{log}\NormalTok{(e }\OperatorTok{^}\StringTok{ }\DecValTok{2}\NormalTok{) }\OperatorTok{/}\StringTok{ }\DecValTok{2}\NormalTok{, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+  \KeywordTok{c}\NormalTok{(dt, dk, dp)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{hessian-of-the-objective-function}{%
+\subsection{Hessian of the objective
+function}\label{hessian-of-the-objective-function}}
+
+\begin{itemize}
+\tightlist
+\item
+  e is the expectated value matrix
+\item
+  v is the matrix of variances
+\item
+  A, e, v all have shape c(10,10)
+\item
+  The variables \_v are copies of the originals to shape c(npar,10,10),
+  paralleling the gradient of g.
+\item
+  The variables \_m are copies of the originals to shape
+  c(npar,npar,10,10), paralleling the hessian of g
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{l.hess =}\StringTok{ }\ControlFlowTok{function}\NormalTok{(a, A) \{}
+\NormalTok{  npar =}\StringTok{ }\KeywordTok{length}\NormalTok{(a) }\OperatorTok{-}\StringTok{ }\DecValTok{2}
+\NormalTok{  p =}\StringTok{ }\NormalTok{a[npar }\OperatorTok{+}\StringTok{ }\DecValTok{2}\NormalTok{]}
+\NormalTok{  Av =}\StringTok{ }\KeywordTok{aperm}\NormalTok{(}\KeywordTok{array}\NormalTok{(A, }\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{, npar)), }\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\NormalTok{  Am =}\StringTok{ }\KeywordTok{aperm}\NormalTok{(}\KeywordTok{array}\NormalTok{(A, }\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{, npar, npar)), }\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\NormalTok{  e =}\StringTok{ }\KeywordTok{g.obj}\NormalTok{(a[}\DecValTok{1}\OperatorTok{:}\NormalTok{npar])}
+\NormalTok{  ev =}\StringTok{ }\KeywordTok{aperm}\NormalTok{(}\KeywordTok{array}\NormalTok{(e, }\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{, npar)), }\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\NormalTok{  em =}\StringTok{ }\KeywordTok{aperm}\NormalTok{(}\KeywordTok{array}\NormalTok{(e, }\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{, npar, npar)), }\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\NormalTok{  v =}\StringTok{ }\KeywordTok{exp}\NormalTok{(}\OperatorTok{-}\KeywordTok{outer}\NormalTok{(logd[, }\DecValTok{1}\NormalTok{], }\KeywordTok{rep}\NormalTok{(a[npar }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{], }\DecValTok{10}\NormalTok{), }\StringTok{"-"}\NormalTok{)) }\OperatorTok{*}\StringTok{ }\NormalTok{(e }\OperatorTok{^}\StringTok{ }\DecValTok{2}\NormalTok{) }\OperatorTok{^}\StringTok{ }\NormalTok{p}
+\NormalTok{  vv =}\StringTok{ }\KeywordTok{aperm}\NormalTok{(}\KeywordTok{array}\NormalTok{(v, }\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{, npar)), }\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\NormalTok{  vm =}\StringTok{ }\KeywordTok{aperm}\NormalTok{(}\KeywordTok{array}\NormalTok{(v, }\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{, npar, npar)), }\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\NormalTok{  g1 =}\StringTok{ }\KeywordTok{g.grad}\NormalTok{(a[}\DecValTok{1}\OperatorTok{:}\NormalTok{npar])}
+\NormalTok{  gg =}\StringTok{ }\KeywordTok{aperm}\NormalTok{(}\KeywordTok{array}\NormalTok{(g1, }\KeywordTok{c}\NormalTok{(npar, }\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{, npar)), }\KeywordTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{))}
+\NormalTok{  gg =}\StringTok{ }\NormalTok{gg }\OperatorTok{*}\StringTok{ }\KeywordTok{aperm}\NormalTok{(gg, }\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{4}\NormalTok{))}
+\NormalTok{  gh =}\StringTok{ }\KeywordTok{g.hess}\NormalTok{(a[}\DecValTok{1}\OperatorTok{:}\NormalTok{npar])}
+\NormalTok{  dtt =}\StringTok{ }\KeywordTok{rowSums}\NormalTok{(}
+\NormalTok{    gh }\OperatorTok{*}\StringTok{ }\NormalTok{(p }\OperatorTok{/}\StringTok{ }\NormalTok{em }\OperatorTok{+}\StringTok{ }\NormalTok{(em }\OperatorTok{-}\StringTok{ }\NormalTok{Am) }\OperatorTok{/}\StringTok{ }\NormalTok{vm }\OperatorTok{-}\StringTok{ }\NormalTok{p }\OperatorTok{*}\StringTok{ }\NormalTok{(Am }\OperatorTok{-}\StringTok{ }\NormalTok{em) }\OperatorTok{^}\StringTok{ }\DecValTok{2} \OperatorTok{/}\StringTok{ }\NormalTok{(vm }\OperatorTok{*}\StringTok{ }\NormalTok{em)) }\OperatorTok{+}
+\StringTok{      }\NormalTok{gg }\OperatorTok{*}\StringTok{ }\NormalTok{(}
+        \DecValTok{1} \OperatorTok{/}\StringTok{ }\NormalTok{vm }\OperatorTok{+}\StringTok{ }\DecValTok{4} \OperatorTok{*}\StringTok{ }\NormalTok{p }\OperatorTok{*}\StringTok{ }\NormalTok{(Am }\OperatorTok{-}\StringTok{ }\NormalTok{em) }\OperatorTok{/}\StringTok{ }\NormalTok{(vm }\OperatorTok{*}\StringTok{ }\NormalTok{em) }\OperatorTok{+}\StringTok{ }\NormalTok{p }\OperatorTok{*}\StringTok{ }\NormalTok{(}\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{p }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{*}\StringTok{ }\NormalTok{(Am }\OperatorTok{-}\StringTok{ }\NormalTok{em) }\OperatorTok{^}\StringTok{ }\DecValTok{2} \OperatorTok{/}
+\StringTok{          }\NormalTok{(vm }\OperatorTok{*}\StringTok{ }\NormalTok{em }\OperatorTok{^}\StringTok{ }\DecValTok{2}\NormalTok{) }\OperatorTok{-}\StringTok{ }\NormalTok{p }\OperatorTok{/}\StringTok{ }\NormalTok{em }\OperatorTok{^}\StringTok{ }\DecValTok{2}
+\NormalTok{      ),}
+    \DataTypeTok{dims =} \DecValTok{2}\NormalTok{,}
+    \DataTypeTok{na.rm =} \OtherTok{TRUE}
+\NormalTok{  )}
+\NormalTok{  dkt =}\StringTok{ }\KeywordTok{rowSums}\NormalTok{((g1 }\OperatorTok{*}\StringTok{ }\NormalTok{(Av }\OperatorTok{-}\StringTok{ }\NormalTok{ev) }\OperatorTok{+}\StringTok{ }\NormalTok{p }\OperatorTok{*}\StringTok{ }\NormalTok{g1 }\OperatorTok{*}\StringTok{ }\NormalTok{(Av }\OperatorTok{-}\StringTok{ }\NormalTok{ev) }\OperatorTok{^}\StringTok{ }\DecValTok{2} \OperatorTok{/}\StringTok{ }\NormalTok{ev) }\OperatorTok{/}\StringTok{ }\NormalTok{vv, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{  dtp =}\StringTok{ }\KeywordTok{rowSums}\NormalTok{(g1 }\OperatorTok{*}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{/}\StringTok{ }\NormalTok{ev }\OperatorTok{+}\StringTok{ }\NormalTok{(}
+    \KeywordTok{log}\NormalTok{(ev }\OperatorTok{^}\StringTok{ }\DecValTok{2}\NormalTok{) }\OperatorTok{*}\StringTok{ }\NormalTok{(Av }\OperatorTok{-}\StringTok{ }\NormalTok{ev) }\OperatorTok{+}\StringTok{ }\NormalTok{(p }\OperatorTok{*}\StringTok{ }\KeywordTok{log}\NormalTok{(ev }\OperatorTok{^}\StringTok{ }\DecValTok{2}\NormalTok{) }\OperatorTok{-}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{*}\StringTok{ }\NormalTok{(Av }\OperatorTok{-}\StringTok{ }\NormalTok{ev) }\OperatorTok{^}\StringTok{ }\DecValTok{2} \OperatorTok{/}\StringTok{ }\NormalTok{ev}
+\NormalTok{  ) }\OperatorTok{/}\StringTok{ }\NormalTok{vv),}
+  \DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{  dkk =}\StringTok{ }\KeywordTok{sum}\NormalTok{((A }\OperatorTok{-}\StringTok{ }\NormalTok{e) }\OperatorTok{^}\StringTok{ }\DecValTok{2} \OperatorTok{/}\StringTok{ }\NormalTok{(}\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{v), }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{  dpk =}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{log}\NormalTok{(e }\OperatorTok{^}\StringTok{ }\DecValTok{2}\NormalTok{) }\OperatorTok{*}\StringTok{ }\NormalTok{(A }\OperatorTok{-}\StringTok{ }\NormalTok{e) }\OperatorTok{^}\StringTok{ }\DecValTok{2} \OperatorTok{/}\StringTok{ }\NormalTok{(}\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{v), }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{  dpp =}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{log}\NormalTok{(e }\OperatorTok{^}\StringTok{ }\DecValTok{2}\NormalTok{) }\OperatorTok{^}\StringTok{ }\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{(A }\OperatorTok{-}\StringTok{ }\NormalTok{e) }\OperatorTok{^}\StringTok{ }\DecValTok{2} \OperatorTok{/}\StringTok{ }\NormalTok{(}\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{v), }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{  m1 =}\StringTok{ }\KeywordTok{rbind}\NormalTok{(}\KeywordTok{array}\NormalTok{(dkt), }\KeywordTok{c}\NormalTok{(dtp))}
+  \KeywordTok{rbind}\NormalTok{(}\KeywordTok{cbind}\NormalTok{(dtt, }\KeywordTok{t}\NormalTok{(m1)), }\KeywordTok{cbind}\NormalTok{(m1, }\KeywordTok{rbind}\NormalTok{(}\KeywordTok{cbind}\NormalTok{(dkk, }\KeywordTok{c}\NormalTok{(}
+\NormalTok{    dpk}
+\NormalTok{  )), }\KeywordTok{c}\NormalTok{(dpk, dpp))))}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+End of funciton specificaitons now on to the minimization
+
+\hypertarget{minimization}{%
+\subsection{Minimization}\label{minimization}}
+
+\hypertarget{get-starting-values-for-kappa-and-p-parameters-default-10-and-1}{%
+\subsubsection{Get starting values for kappa and p parameters, default
+10 and
+1}\label{get-starting-values-for-kappa-and-p-parameters-default-10-and-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ttt =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+For starting values use fitted objective function and assume variance
+for a cell is estimated by the square of the difference between actual
+and expected averages. Note since log(0) is -Inf we need to go through
+some machinations to prep the y values for the fit
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{E =}\StringTok{ }\KeywordTok{g.obj}\NormalTok{(a0)}
+\NormalTok{yyy =}\StringTok{ }\NormalTok{(A0 }\OperatorTok{-}\StringTok{ }\NormalTok{E)}\OperatorTok{^}\DecValTok{2}
+\NormalTok{yyy =}\StringTok{ }\NormalTok{logd }\OperatorTok{+}\StringTok{ }\KeywordTok{log}\NormalTok{(((yyy }\OperatorTok{!=}\StringTok{ }\DecValTok{0}\NormalTok{) }\OperatorTok{*}\StringTok{ }\NormalTok{yyy) }\OperatorTok{-}\StringTok{ }\NormalTok{(yyy }\OperatorTok{==}\StringTok{ }\DecValTok{0}\NormalTok{))}
+\NormalTok{sss =}\StringTok{ }\KeywordTok{na.omit}\NormalTok{(}\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{x =} \KeywordTok{c}\NormalTok{(}\KeywordTok{log}\NormalTok{(E}\OperatorTok{^}\DecValTok{2}\NormalTok{)), }\DataTypeTok{y =} \KeywordTok{c}\NormalTok{(yyy)))}
+\NormalTok{ttt =}\StringTok{ }\KeywordTok{array}\NormalTok{(}\KeywordTok{coef}\NormalTok{(}\KeywordTok{lm}\NormalTok{(sss}\OperatorTok{$}\NormalTok{y }\OperatorTok{~}\StringTok{ }\NormalTok{sss}\OperatorTok{$}\NormalTok{x)))[}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{]}
+\NormalTok{a0 =}\StringTok{ }\KeywordTok{c}\NormalTok{(a0, ttt)}
+
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{) }\CommentTok{# to check reproducibility with original code}
+\NormalTok{max =}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{iter.max =} \DecValTok{10000}\NormalTok{, }\DataTypeTok{eval.max =} \DecValTok{10000}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{actual-minimization}{%
+\subsubsection{Actual minimization}\label{actual-minimization}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mle =}\StringTok{ }\KeywordTok{nlminb}\NormalTok{(a0, l.obj, }\DataTypeTok{gradient =}\NormalTok{ l.grad, }\DataTypeTok{hessian =}\NormalTok{ l.hess, }
+             \DataTypeTok{scale =} \KeywordTok{abs}\NormalTok{(}\DecValTok{1} \OperatorTok{/}\StringTok{ }\NormalTok{(}\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{((a0 }\OperatorTok{*}\StringTok{ }\NormalTok{(a0 }\OperatorTok{!=}\StringTok{ }\DecValTok{0}\NormalTok{)) }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{*}\StringTok{ }\NormalTok{(a0 }\OperatorTok{==}\StringTok{ }\DecValTok{0}\NormalTok{))))),}
+             \DataTypeTok{A =}\NormalTok{ A0, }\DataTypeTok{control =}\NormalTok{ max)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{model-statistics}{%
+\subsubsection{Model statistics}\label{model-statistics}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{mean} and \textbf{var} are model fitted values
+\item
+  \textbf{stres} is the standardized residuals
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{npar =}\StringTok{ }\KeywordTok{length}\NormalTok{(a0) }\OperatorTok{-}\StringTok{ }\DecValTok{2}
+\NormalTok{p =}\StringTok{ }\NormalTok{mle}\OperatorTok{$}\NormalTok{par[npar }\OperatorTok{+}\StringTok{ }\DecValTok{2}\NormalTok{]}
+\NormalTok{mean =}\StringTok{ }\KeywordTok{g.obj}\NormalTok{(mle}\OperatorTok{$}\NormalTok{par[}\DecValTok{1}\OperatorTok{:}\NormalTok{npar])}
+\NormalTok{var =}\StringTok{ }\KeywordTok{exp}\NormalTok{(}\OperatorTok{-}\KeywordTok{outer}\NormalTok{(logd[, }\DecValTok{1}\NormalTok{], }\KeywordTok{rep}\NormalTok{(mle}\OperatorTok{$}\NormalTok{par[npar }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{], }\DecValTok{10}\NormalTok{), }\StringTok{"-"}\NormalTok{)) }\OperatorTok{*}\StringTok{ }\NormalTok{(mean }\OperatorTok{^}
+\StringTok{                                                                   }\DecValTok{2}\NormalTok{) }\OperatorTok{^}\StringTok{ }\NormalTok{p}
+\NormalTok{stres =}\StringTok{ }\NormalTok{(A0 }\OperatorTok{-}\StringTok{ }\NormalTok{mean) }\OperatorTok{/}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(var)}
+\NormalTok{g1 =}\StringTok{ }\KeywordTok{g.grad}\NormalTok{(mle}\OperatorTok{$}\NormalTok{par[}\DecValTok{1}\OperatorTok{:}\NormalTok{npar])}
+\NormalTok{gg =}\StringTok{ }\KeywordTok{aperm}\NormalTok{(}\KeywordTok{array}\NormalTok{(g1, }\KeywordTok{c}\NormalTok{(npar, }\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{, npar)), }\KeywordTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{))}
+\NormalTok{gg =}\StringTok{ }\NormalTok{gg }\OperatorTok{*}\StringTok{ }\KeywordTok{aperm}\NormalTok{(gg, }\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{4}\NormalTok{))}
+\NormalTok{meanv =}\StringTok{ }\KeywordTok{aperm}\NormalTok{(}\KeywordTok{array}\NormalTok{(mean, }\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{, npar)), }\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\NormalTok{meanm =}\StringTok{ }\KeywordTok{aperm}\NormalTok{(}\KeywordTok{array}\NormalTok{(mean, }\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{, npar, npar)), }\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\NormalTok{varm =}\StringTok{ }\KeywordTok{aperm}\NormalTok{(}\KeywordTok{array}\NormalTok{(var, }\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{, npar, npar)), }\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{masks-to-screen-out-na-entries-in-original-input-matrix}{%
+\subsubsection{Masks to screen out NA entries in original input
+matrix}\label{masks-to-screen-out-na-entries-in-original-input-matrix}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{s =}\StringTok{ }\DecValTok{0} \OperatorTok{*}\StringTok{ }\NormalTok{A0}
+\NormalTok{sv =}\StringTok{ }\KeywordTok{aperm}\NormalTok{(}\KeywordTok{array}\NormalTok{(s, }\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{, npar)), }\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\NormalTok{sm =}\StringTok{ }\KeywordTok{aperm}\NormalTok{(}\KeywordTok{array}\NormalTok{(s, }\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{, npar, npar)), }\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{calculate-the-information-matrix}{%
+\subsubsection{Calculate the information
+matrix}\label{calculate-the-information-matrix}}
+
+\begin{itemize}
+\tightlist
+\item
+  Using second derivatives of the log likelihood function Second with
+  respect to theta parameters
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{tt =}\StringTok{ }\KeywordTok{rowSums}\NormalTok{(sm }\OperatorTok{+}\StringTok{ }\NormalTok{gg }\OperatorTok{*}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{/}\StringTok{ }\NormalTok{varm }\OperatorTok{+}\StringTok{ }\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{p }\OperatorTok{^}\StringTok{ }\DecValTok{2} \OperatorTok{/}\StringTok{ }\NormalTok{(meanm }\OperatorTok{^}\StringTok{ }\DecValTok{2}\NormalTok{)), }\DataTypeTok{dims =} \DecValTok{2}\NormalTok{, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Second with respect to theta and kappa
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{kt =}\StringTok{ }\NormalTok{p }\OperatorTok{*}\StringTok{ }\KeywordTok{rowSums}\NormalTok{(sv }\OperatorTok{+}\StringTok{ }\NormalTok{g1 }\OperatorTok{/}\StringTok{ }\NormalTok{meanv, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Second with respect to p and theta
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{tp =}\StringTok{ }\NormalTok{p }\OperatorTok{*}\StringTok{ }\KeywordTok{rowSums}\NormalTok{(sv }\OperatorTok{+}\StringTok{ }\NormalTok{g1 }\OperatorTok{*}\StringTok{ }\KeywordTok{log}\NormalTok{(meanv }\OperatorTok{^}\StringTok{ }\DecValTok{2}\NormalTok{) }\OperatorTok{/}\StringTok{ }\NormalTok{meanv, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Second with respect to kappa
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{kk =}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{/}\StringTok{ }\DecValTok{2}\NormalTok{) }\OperatorTok{*}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\DecValTok{1} \OperatorTok{+}\StringTok{ }\NormalTok{s, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Second with respect to p and kappa
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pk =}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{/}\StringTok{ }\DecValTok{2}\NormalTok{) }\OperatorTok{*}\StringTok{ }\KeywordTok{sum}\NormalTok{(s }\OperatorTok{+}\StringTok{ }\KeywordTok{log}\NormalTok{(mean }\OperatorTok{^}\StringTok{ }\DecValTok{2}\NormalTok{), }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Second with respect to p
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pp =}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{/}\StringTok{ }\DecValTok{2}\NormalTok{) }\OperatorTok{*}\StringTok{ }\KeywordTok{sum}\NormalTok{(s }\OperatorTok{+}\StringTok{ }\KeywordTok{log}\NormalTok{(mean }\OperatorTok{^}\StringTok{ }\DecValTok{2}\NormalTok{) }\OperatorTok{^}\StringTok{ }\DecValTok{2}\NormalTok{, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{create-information-matrix-in-blocks}{%
+\subsubsection{Create information matrix in
+blocks}\label{create-information-matrix-in-blocks}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m1 =}\StringTok{ }\KeywordTok{rbind}\NormalTok{(}\KeywordTok{array}\NormalTok{(kt), }\KeywordTok{c}\NormalTok{(tp))}
+\NormalTok{inf =}\StringTok{ }\KeywordTok{rbind}\NormalTok{(}\KeywordTok{cbind}\NormalTok{(tt, }\KeywordTok{t}\NormalTok{(m1)), }\KeywordTok{cbind}\NormalTok{(m1, }\KeywordTok{rbind}\NormalTok{(}\KeywordTok{c}\NormalTok{(kk, pk), }\KeywordTok{c}\NormalTok{(pk, pp))))}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{variance-covariance-matrix-for-parameters-inverse-of-information-matrix}{%
+\section{Variance-covariance matrix for parameters, inverse of
+information
+matrix}\label{variance-covariance-matrix-for-parameters-inverse-of-information-matrix}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{vcov =}\StringTok{ }\KeywordTok{solve}\NormalTok{(inf)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{simulation}{%
+\subsubsection{Simulation}\label{simulation}}
+
+Initialize simulation array to keep simulation results
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sim =}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{11}\NormalTok{)}
+\NormalTok{smn =}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{11}\NormalTok{)}
+\NormalTok{spm =}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, npar }\OperatorTok{+}\StringTok{ }\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Simulation for distribution of future amounts
+
+Want 10,000 simulations, but exceeds R capacity, so do in batches of
+5,000
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{nsim =}\StringTok{ }\DecValTok{5000}
+\NormalTok{smsk =}\StringTok{ }\KeywordTok{aperm}\NormalTok{(}\KeywordTok{array}\NormalTok{(}\KeywordTok{c}\NormalTok{(msk), }\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{, nsim)), }\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\NormalTok{smsn =}\StringTok{ }\KeywordTok{aperm}\NormalTok{(}\KeywordTok{array}\NormalTok{(}\KeywordTok{c}\NormalTok{(msn), }\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{, nsim)), }\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+
+\ControlFlowTok{if}\NormalTok{ (simulation) \{}
+  \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{) \{}
+    \CommentTok{# Randomly generate parameters from multivariate normal}
+\NormalTok{    spar =}\StringTok{ }\KeywordTok{rmvnorm}\NormalTok{(nsim, mle}\OperatorTok{$}\NormalTok{par, vcov)}
+
+    \CommentTok{# Arrays to calculate simulated means}
+\NormalTok{    esim =}\StringTok{ }\KeywordTok{g.obj}\NormalTok{(spar)}
+
+    \CommentTok{# Arrays to calculate simulated variances}
+\NormalTok{    ksim =}\StringTok{ }\KeywordTok{exp}\NormalTok{(}\KeywordTok{aperm}\NormalTok{(}\KeywordTok{outer}\NormalTok{(}\KeywordTok{array}\NormalTok{(}
+\NormalTok{      spar[, }\KeywordTok{c}\NormalTok{(npar }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{)], }\KeywordTok{c}\NormalTok{(nsim, }\DecValTok{10}\NormalTok{)}
+\NormalTok{    ), }\KeywordTok{log}\NormalTok{(dnom), }\StringTok{"-"}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{2}\NormalTok{)))}
+\NormalTok{    psim =}\StringTok{ }\KeywordTok{array}\NormalTok{(spar[, npar }\OperatorTok{+}\StringTok{ }\DecValTok{2}\NormalTok{], }\KeywordTok{c}\NormalTok{(nsim, }\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{))}
+\NormalTok{    vsim =}\StringTok{ }\NormalTok{ksim }\OperatorTok{*}\StringTok{ }\NormalTok{(esim }\OperatorTok{^}\StringTok{ }\DecValTok{2}\NormalTok{) }\OperatorTok{^}\StringTok{ }\NormalTok{psim}
+
+    \CommentTok{# Randomly simulate future averages}
+\NormalTok{    temp =}\StringTok{ }\KeywordTok{array}\NormalTok{(}\KeywordTok{rnorm}\NormalTok{(nsim }\OperatorTok{*}\StringTok{ }\DecValTok{10} \OperatorTok{*}\StringTok{ }\DecValTok{10}\NormalTok{, }\KeywordTok{c}\NormalTok{(esim), }\KeywordTok{sqrt}\NormalTok{(}\KeywordTok{c}\NormalTok{(vsim))), }\KeywordTok{c}\NormalTok{(nsim, }\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{))}
+
+    \CommentTok{# Combine to total by exposure period and in aggregate}
+    \CommentTok{# notice separate array with name ending in "n" to capture}
+    \CommentTok{# forecast for next accounting period}
+\NormalTok{    sdnm =}\StringTok{ }\KeywordTok{t}\NormalTok{(}\KeywordTok{matrix}\NormalTok{(dnom, }\DecValTok{10}\NormalTok{, nsim))}
+\NormalTok{    fore =}\StringTok{ }\NormalTok{sdnm }\OperatorTok{*}\StringTok{ }\KeywordTok{rowSums}\NormalTok{(temp }\OperatorTok{*}\StringTok{ }\OperatorTok{!}\NormalTok{smsk, }\DataTypeTok{dims =} \DecValTok{2}\NormalTok{)}
+\NormalTok{    forn =}\StringTok{ }\NormalTok{sdnm }\OperatorTok{*}\StringTok{ }\KeywordTok{rowSums}\NormalTok{(temp }\OperatorTok{*}\StringTok{ }\NormalTok{smsn, }\DataTypeTok{dims =} \DecValTok{2}\NormalTok{)}
+
+    \CommentTok{# Cumulate and return for another 5,000}
+\NormalTok{    sim =}\StringTok{ }\KeywordTok{rbind}\NormalTok{(sim, }\KeywordTok{cbind}\NormalTok{(fore, }\KeywordTok{rowSums}\NormalTok{(fore)))}
+\NormalTok{    smn =}\StringTok{ }\KeywordTok{rbind}\NormalTok{(smn, }\KeywordTok{cbind}\NormalTok{(forn, }\KeywordTok{rowSums}\NormalTok{(forn)))}
+\NormalTok{    spm =}\StringTok{ }\KeywordTok{rbind}\NormalTok{(spm, spar)}
+\NormalTok{  \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{print-results}{%
+\subsection{Print Results}\label{print-results}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Hoerl"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{model_description}\NormalTok{(model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Generalized Hoerl Curve Model with Trend"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(sim)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        V1          V2                 V3                 V4          
+##  Min.   :0   Min.   :-2208490   Min.   :-3804527   Min.   :-5992989  
+##  1st Qu.:0   1st Qu.:  -21117   1st Qu.:  367584   1st Qu.: 1840551  
+##  Median :0   Median :  182624   Median :  832281   Median : 2737909  
+##  Mean   :0   Mean   :  187219   Mean   :  852369   Mean   : 2764779  
+##  3rd Qu.:0   3rd Qu.:  392581   3rd Qu.: 1324325   3rd Qu.: 3665383  
+##  Max.   :0   Max.   : 2337207   Max.   : 5463162   Max.   : 9796623  
+##        V5                 V6                 V7          
+##  Min.   :-2673996   Min.   : 2973114   Min.   :18415004  
+##  1st Qu.: 5895531   1st Qu.:15056985   1st Qu.:36558098  
+##  Median : 7417472   Median :17391073   Median :40191121  
+##  Mean   : 7433759   Mean   :17428167   Mean   :40198575  
+##  3rd Qu.: 8952586   3rd Qu.:19775174   3rd Qu.:43786949  
+##  Max.   :17823691   Max.   :33324982   Max.   :64044023  
+##        V8                  V9                 V10           
+##  Min.   : 42635180   Min.   : 84602187   Min.   :147458026  
+##  1st Qu.: 67656581   1st Qu.:117555956   1st Qu.:197239795  
+##  Median : 72765035   Median :124469665   Median :207118943  
+##  Mean   : 72769286   Mean   :124641424   Mean   :207451820  
+##  3rd Qu.: 77764124   3rd Qu.:131567817   3rd Qu.:217428116  
+##  Max.   :106540770   Max.   :173366354   Max.   :271965621  
+##       V11           
+##  Min.   :348584519  
+##  1st Qu.:453264017  
+##  Median :473033240  
+##  Mean   :473727397  
+##  3rd Qu.:493480419  
+##  Max.   :606557866
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(smn)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        V1          V2                 V3                 V4          
+##  Min.   :0   Min.   :-2208490   Min.   :-3115594   Min.   :-3068350  
+##  1st Qu.:0   1st Qu.:  -21117   1st Qu.:  237639   1st Qu.: 1158427  
+##  Median :0   Median :  182624   Median :  630842   Median : 1853083  
+##  Mean   :0   Mean   :  187219   Mean   :  640646   Mean   : 1857638  
+##  3rd Qu.:0   3rd Qu.:  392581   3rd Qu.: 1043496   3rd Qu.: 2560199  
+##  Max.   :0   Max.   : 2337207   Max.   : 3971738   Max.   : 6843497  
+##        V5                 V6                 V7          
+##  Min.   :-4249322   Min.   :  672065   Min.   : 6333106  
+##  1st Qu.: 3487607   1st Qu.: 8249938   1st Qu.:18143629  
+##  Median : 4616366   Median : 9867620   Median :20452592  
+##  Mean   : 4606687   Mean   : 9879531   Mean   :20497593  
+##  3rd Qu.: 5722689   3rd Qu.:11498718   3rd Qu.:22806770  
+##  Max.   :11746388   Max.   :19262639   Max.   :35413380  
+##        V8                 V9                V10          
+##  Min.   :12362698   Min.   :23576556   Min.   :33066545  
+##  1st Qu.:29265167   1st Qu.:42456948   1st Qu.:54880593  
+##  Median :32271226   Median :46051469   Median :59310793  
+##  Mean   :32277564   Mean   :46118371   Mean   :59372552  
+##  3rd Qu.:35256668   3rd Qu.:49811006   3rd Qu.:63722832  
+##  Max.   :53006982   Max.   :72609638   Max.   :86736032  
+##       V11           
+##  Min.   :129752423  
+##  1st Qu.:167087821  
+##  Median :175382878  
+##  Mean   :175437801  
+##  3rd Qu.:183644510  
+##  Max.   :230595466
+\end{verbatim}
+
+\hypertarget{scatter-plots-of-residuals-distribution-of-forecasts}{%
+\subsection{Scatter plots of residuals \& Distribution of
+Forecasts}\label{scatter-plots-of-residuals-distribution-of-forecasts}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{ (graphs) \{}
+  \CommentTok{#x11(title = model_description(model))}
+
+  \CommentTok{# Prep data for lines for averages in scatter plots of standardized residuals}
+\NormalTok{  ttt =}\StringTok{ }\KeywordTok{array}\NormalTok{(}\KeywordTok{cbind}\NormalTok{(}\KeywordTok{c}\NormalTok{(rowNum }\OperatorTok{+}\StringTok{ }\NormalTok{colNum }\OperatorTok{-}\StringTok{ }\DecValTok{1}\NormalTok{), }\KeywordTok{c}\NormalTok{(stres)), }
+              \KeywordTok{c}\NormalTok{(}\KeywordTok{length}\NormalTok{(}\KeywordTok{c}\NormalTok{(stres)), }\DecValTok{2}\NormalTok{, }\DecValTok{19}\NormalTok{))}
+\NormalTok{  sss =}\StringTok{ }\KeywordTok{t}\NormalTok{(}\KeywordTok{array}\NormalTok{((}\DecValTok{1}\OperatorTok{:}\DecValTok{19}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\DecValTok{19}\NormalTok{, }\KeywordTok{length}\NormalTok{(}\KeywordTok{c}\NormalTok{(stres)))))}
+
+  \CommentTok{# Plotting}
+  \KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+  \KeywordTok{plot}\NormalTok{(}
+    \KeywordTok{na.omit}\NormalTok{(}\KeywordTok{cbind}\NormalTok{(}\KeywordTok{c}\NormalTok{(rowNum }\OperatorTok{+}\StringTok{ }\NormalTok{colNum }\OperatorTok{-}\StringTok{ }\DecValTok{1}\NormalTok{), }\KeywordTok{c}\NormalTok{(stres))),}
+    \DataTypeTok{main =} \StringTok{"Standardized Residuals by CY"}\NormalTok{,}
+    \DataTypeTok{xlab =} \StringTok{"CY"}\NormalTok{,}
+    \DataTypeTok{ylab =} \StringTok{"Standardized Residual"}\NormalTok{,}
+    \DataTypeTok{pch =} \DecValTok{18}
+\NormalTok{  )}
+  \KeywordTok{lines}\NormalTok{(}\KeywordTok{na.omit}\NormalTok{(}\KeywordTok{list}\NormalTok{(}
+    \DataTypeTok{x =}\NormalTok{ (}\DecValTok{1}\OperatorTok{:}\DecValTok{19}\NormalTok{),}
+    \DataTypeTok{y =} \KeywordTok{colSums}\NormalTok{(ttt[, }\DecValTok{2}\NormalTok{, ] }\OperatorTok{*}
+\StringTok{                  }\NormalTok{(ttt[, }\DecValTok{1}\NormalTok{, ] }\OperatorTok{==}\StringTok{ }\NormalTok{sss), }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{/}
+\StringTok{      }\KeywordTok{colSums}\NormalTok{((ttt[, }\DecValTok{1}\NormalTok{, ] }\OperatorTok{==}\StringTok{ }\NormalTok{sss) }\OperatorTok{+}
+\StringTok{                }\DecValTok{0} \OperatorTok{*}
+\StringTok{                }\NormalTok{ttt[, }\DecValTok{2}\NormalTok{, ], }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{  )), }\DataTypeTok{col =} \StringTok{"red"}\NormalTok{)}
+  \KeywordTok{plot}\NormalTok{(}
+    \KeywordTok{na.omit}\NormalTok{(}\KeywordTok{cbind}\NormalTok{(}\KeywordTok{c}\NormalTok{(colNum), }\KeywordTok{c}\NormalTok{(stres))),}
+    \DataTypeTok{main =} \StringTok{"Standardized Residuals by Lag"}\NormalTok{,}
+    \DataTypeTok{xlab =} \StringTok{"Lag"}\NormalTok{,}
+    \DataTypeTok{ylab =} \StringTok{"Standardized Residual"}\NormalTok{,}
+    \DataTypeTok{pch =} \DecValTok{18}
+\NormalTok{  )}
+  \KeywordTok{lines}\NormalTok{(}\KeywordTok{na.omit}\NormalTok{(}\KeywordTok{list}\NormalTok{(}
+    \DataTypeTok{x =}\NormalTok{ colNum[}\DecValTok{1}\NormalTok{, ],}
+    \DataTypeTok{y =} \KeywordTok{colSums}\NormalTok{(stres, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{/}
+\StringTok{      }\KeywordTok{colSums}\NormalTok{(}\DecValTok{1} \OperatorTok{+}\StringTok{ }\DecValTok{0} \OperatorTok{*}\StringTok{ }\NormalTok{stres, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{  )), }\DataTypeTok{col =} \StringTok{"red"}\NormalTok{)}
+  \KeywordTok{qqnorm}\NormalTok{(}\KeywordTok{c}\NormalTok{(stres))}
+  \KeywordTok{qqline}\NormalTok{(}\KeywordTok{c}\NormalTok{(stres))}
+  \ControlFlowTok{if}\NormalTok{ (simulation) \{}
+\NormalTok{    proc =}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ (}\KeywordTok{density}\NormalTok{(sim[, }\DecValTok{11}\NormalTok{]))}\OperatorTok{$}\NormalTok{x,}
+                \DataTypeTok{y =} \KeywordTok{dnorm}\NormalTok{((}\KeywordTok{density}\NormalTok{(sim[, }\DecValTok{11}\NormalTok{]))}\OperatorTok{$}\NormalTok{x,}
+                          \KeywordTok{sum}\NormalTok{(}\KeywordTok{matrix}\NormalTok{(}\KeywordTok{c}\NormalTok{(}
+\NormalTok{                            dnom}
+\NormalTok{                          ), }\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{) }\OperatorTok{*}\StringTok{ }\NormalTok{mean }\OperatorTok{*}\StringTok{ }\OperatorTok{!}\NormalTok{msk),}
+                          \KeywordTok{sqrt}\NormalTok{(}\KeywordTok{sum}\NormalTok{(}
+                            \KeywordTok{matrix}\NormalTok{(}\KeywordTok{c}\NormalTok{(dnom), }\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{) }\OperatorTok{^}\StringTok{ }\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{var }\OperatorTok{*}\StringTok{ }\OperatorTok{!}\NormalTok{msk}
+\NormalTok{                          ))))}
+    \KeywordTok{truehist}\NormalTok{(sim[, }\DecValTok{11}\NormalTok{],}
+             \DataTypeTok{ymax =} \KeywordTok{max}\NormalTok{(proc}\OperatorTok{$}\NormalTok{y),}
+             \DataTypeTok{main =} \StringTok{"All Years Combined Future Amounts"}\NormalTok{,}
+             \DataTypeTok{xlab =} \StringTok{"Aggregate"}\NormalTok{)}
+    \KeywordTok{lines}\NormalTok{(proc)}
+\NormalTok{  \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{stochastic_reserving_files/figure-latex/plots-1.pdf}
+\#\# Summary From Simulation
+
+Summary of mean, standard deviation, and 90\% confidence interval from
+simulation, similar for one-period forecast
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sumr =}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{4}\NormalTok{)}
+\NormalTok{sumn =}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{4}\NormalTok{)}
+
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\DecValTok{11}\NormalTok{) \{}
+\NormalTok{  sumr =}\StringTok{ }\KeywordTok{rbind}\NormalTok{(sumr, }\KeywordTok{c}\NormalTok{(}\KeywordTok{mean}\NormalTok{(sim[, i]), }\KeywordTok{sd}\NormalTok{(sim[, i]), }\KeywordTok{quantile}\NormalTok{(sim[, i], }\KeywordTok{c}\NormalTok{(.}\DecValTok{05}\NormalTok{, }\FloatTok{.95}\NormalTok{))))}
+\NormalTok{  sumn =}\StringTok{ }\KeywordTok{rbind}\NormalTok{(sumn, }\KeywordTok{c}\NormalTok{(}\KeywordTok{mean}\NormalTok{(smn[, i]), }\KeywordTok{sd}\NormalTok{(smn[, i]), }\KeywordTok{quantile}\NormalTok{(smn[, i], }\KeywordTok{c}\NormalTok{(.}\DecValTok{05}\NormalTok{, }\FloatTok{.95}\NormalTok{))))}
+\NormalTok{\}}
+\NormalTok{sumr}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                                       5%         95%
+##  [1,]         0.0        0.0         0.0         0.0
+##  [2,]    187218.8   353761.7   -369841.5    771157.4
+##  [3,]    852369.4   772535.9   -380479.7   2139129.1
+##  [4,]   2764779.0  1423821.4    477583.3   5125608.7
+##  [5,]   7433758.5  2324640.2   3648857.0  11230492.1
+##  [6,]  17428166.6  3534255.6  11707287.6  23288978.3
+##  [7,]  40198575.3  5398539.0  31437358.2  49159689.5
+##  [8,]  72769285.8  7522855.3  60449526.0  85209982.7
+##  [9,] 124641423.8 10528687.6 107631732.4 142319135.4
+## [10,] 207451819.6 15348515.7 182707406.7 233387503.6
+## [11,] 473727396.8 29753777.6 426184913.1 523884658.5
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sumn}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                                        5%         95%
+##  [1,]         0.0        0.0         0.00         0.0
+##  [2,]    187218.8   353761.7   -369841.53    771157.4
+##  [3,]    640646.4   650084.5   -414251.81   1707212.6
+##  [4,]   1857638.2  1084140.1     97447.16   3637977.1
+##  [5,]   4606686.8  1674886.5   1854988.61   7323039.9
+##  [6,]   9879531.2  2435095.3   5867670.36  13873959.3
+##  [7,]  20497593.0  3517316.7  14703500.28  26303795.5
+##  [8,]  32277564.1  4510385.1  24954391.59  39750930.9
+##  [9,]  46118371.0  5547381.1  37074538.57  55339176.1
+## [10,]  59372551.6  6615812.4  48611660.50  70333442.5
+## [11,] 175437801.1 12401775.7 155072276.37 195956054.9
+\end{verbatim}
+
+
+\end{document}

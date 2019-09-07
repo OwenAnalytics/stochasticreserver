@@ -1,15 +1,23 @@
-#if(model=="Chain") {
-#
-# g itself
-# Basic design is for g to be a function of a single parameter vector, however
-# in the simulations it is necessary to work on a matrix of parameters, one
-# row for each simulated parameter, so g.obj must be flexible enough to handle
-# both.
-# Here g.obj is a version of the Cape Cod model but with the restriction
-# that the expected cumulative averge payments to date equal the actual
-# average paid to date.  Because of this restriction the incremental averages
-# are expressed as a percentage times the expected ultimate by row.
-# Formulae all assume a full, square development triangle.
+#' Create list for Cape Cod model
+#'
+#' g itself
+#' Basic design is for g to be a function of a single parameter vector, however
+#' in the simulations it is necessary to work on a matrix of parameters, one
+#' row for each simulated parameter, so g.obj must be flexible enough to handle
+#' both.
+#' Here g.obj is a version of the Cape Cod model but with the restriction
+#' that the expected cumulative averge payments to date equal the actual
+#' average paid to date.  Because of this restriction the incremental averages
+#' are expressed as a percentage times the expected ultimate by row.
+#' Formulae all assume a full, square development triangle.
+#' @param theta do not know
+#' @param tau do not know
+#' @param B0 development triangle
+#' @param ptd do not know
+#' @param msk mask for triangle
+#'
+#' @importFrom stats coef lm na.omit
+#' @import abind
 #' @export
 chain <- function(tau, B0, ptd, msk) {
   g.obj = function(theta) {
