@@ -17,28 +17,29 @@
 #' @import abind
 #' @export
 wright <- function(tau, B0, ptd, msk) {
+  size <- nrow(B0)
   g.obj = function(theta) {
     if (is.vector(theta))
     {
-      exp(array(theta[1:10], c(10, 10)) + theta[11] * tau + theta[12] * tau ^
-            2 +
-            theta[13] * log(tau))
+      exp(array(theta[1:size], c(size, size)) + theta[(size + 1)] * tau +
+            theta[(size + 2)] * tau^2 +
+            theta[(size + 3)] * log(tau))
     }
     else
     {
       exp(
-        array(theta[, 1:10], c(nrow(theta), 10, 10)) +
-          array(theta[, 11], c(nrow(theta), 10, 10)) *
+        array(theta[, 1:size], c(nrow(theta), size, size)) +
+          array(theta[, (size + 1)], c(nrow(theta), size, size)) *
           aperm(array(tau, c(
-            10, 10, nrow(theta)
+            size, size, nrow(theta)
           )), c(3, 1, 2)) +
-          array(theta[, 12], c(nrow(theta), 10, 10)) *
+          array(theta[, (size + 2)], c(nrow(theta), size, size)) *
           aperm(array(tau ^ 2, c(
-            10, 10, nrow(theta)
+            size, size, nrow(theta)
           )), c(3, 1, 2)) +
-          array(theta[, 13], c(nrow(theta), 10, 10)) *
+          array(theta[, (size + 3)], c(nrow(theta), size, size)) *
           aperm(array(log(tau), c(
-            10, 10, nrow(theta)
+            size, size, nrow(theta)
           )), c(3, 1, 2))
       )
     }
@@ -46,44 +47,44 @@ wright <- function(tau, B0, ptd, msk) {
 
   # Gradient of g
   # Note the gradient is a 3-dimensional function of the parameters theta
-  # with dimensions 13, 10, 10.  The first dimension
+  # with dimensions (size + 3), size, size.  The first dimension
   # represents the parameters involved in the derivatives
   g.grad = function(theta) {
-    abind(array(outer(1:10, 1:10, "=="), c(10, 10, 10)),
+    abind(array(outer(1:size, 1:size, "=="), c(size, size, size)),
           abind(tau, abind(tau ^ 2, log(tau),
                            along = 0.5),
                 along = 1),
-          along = 1) * aperm(array(g.obj(theta), c(10, 10, 13)), c(3, 1, 2))
+          along = 1) * aperm(array(g.obj(theta), c(size, size, (size + 3))), c(3, 1, 2))
   }
 
   # Hessian of g
   # Note the Hessian is a 4-dimensional function of the parameters theta
-  # with dimensions 13, 13, 10, 10.  First two dimensions
+  # with dimensions (size + 3), (size + 3), size, size.  First two dimensions
   # represent the parameters involved in the partial derivatives
   g.hess = function(theta)  {
-    aa = array(abind(array(outer(1:10, 1:10, "=="), c(10, 10, 10)),
+    aa = array(abind(array(outer(1:size, 1:size, "=="), c(size, size, size)),
                      abind(
                        tau, abind(tau ^ 2, log(tau),
                                   along = 0.5),
                        along = 1
                      ),
                      along = 1),
-               c(13, 10, 10, 13))
+               c((size + 3), size, size, (size + 3)))
     aperm(aa, c(4, 1, 2, 3)) * aperm(aa, c(1, 4, 2, 3)) *
-      aperm(array(g.obj(theta), c(10, 10, 13, 13)), c(3, 4, 1, 2))
+      aperm(array(g.obj(theta), c(size, size, (size + 3), (size + 3))), c(3, 4, 1, 2))
   }
 
   # Base starting values on classic chain ladder forecasts
   ptd = ((!ptd == 0) * ptd) + (ptd == 0) * mean(ptd)
   tmp = c((
-    colSums(B0[, 2:10] + 0 * B0[, 1:9], na.rm = TRUE) /
-      colSums(B0[, 1:9] + 0 * B0[, 2:10], na.rm = TRUE)
+    colSums(B0[, 2:size] + 0 * B0[, 1:(size - 1)], na.rm = TRUE) /
+      colSums(B0[, 1:(size - 1)] + 0 * B0[, 2:size], na.rm = TRUE)
   ),
   1)
-  yy = 1 / (cumprod(tmp[11 - (1:10)]))[11 - (1:10)]
-  xx = yy - c(0, yy[1:9])
-  ww = t(array(xx, c(10, 10)))
-  uv = ptd / ((10 == rowSums(msk)) + (10 > rowSums(msk)) * rowSums(msk *
+  yy = 1 / (cumprod(tmp[(size + 1) - (1:size)]))[(size + 1) - (1:size)]
+  xx = yy - c(0, yy[1:(size - 1)])
+  ww = t(array(xx, c(size, size)))
+  uv = ptd / ((size == rowSums(msk)) + (size > rowSums(msk)) * rowSums(msk *
                                                                      ww))
   tmp = na.omit(data.frame(
     x1 = c(tau),

@@ -4,7 +4,7 @@
 \alias{capecod}
 \title{Create list for Kramer Chain Ladder parmaterization model
 g - Assumed loss emergence model, a function of the parameters a.
-Note g must be matrix-valued with 10 rows and 10 columns
+Note g must be matrix-valued with size rows and size columns
 g itself
 Basic design is for g to be a function of a single parameter vector, however
 in the simulations it is necessary to work on a matrix of parameters, one
@@ -26,7 +26,7 @@ capecod(tau, B0, ptd, msk)
 \description{
 Create list for Kramer Chain Ladder parmaterization model
 g - Assumed loss emergence model, a function of the parameters a.
-Note g must be matrix-valued with 10 rows and 10 columns
+Note g must be matrix-valued with size rows and size columns
 g itself
 Basic design is for g to be a function of a single parameter vector, however
 in the simulations it is necessary to work on a matrix of parameters, one

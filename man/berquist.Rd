@@ -17,7 +17,7 @@ berquist(tau, B0, ptd, msk)
 }
 \description{
 g - Assumed loss emergence model, a function of the parameters a.
-Note g must be matrix-valued with 10 rows and 10 columns
+Note g must be matrix-valued with size rows and size columns
 }
 \details{
 g itself

@@ -1,7 +1,7 @@
 #' Create list for Berquist-Sherman incremental severity model
 #'
 #' g - Assumed loss emergence model, a function of the parameters a.
-#' Note g must be matrix-valued with 10 rows and 10 columns
+#' Note g must be matrix-valued with size rows and size columns
 #'
 #' g itself
 #' Basic design is for g to be a function of a single parameter vector, however
@@ -18,44 +18,49 @@
 #' @import abind
 #' @export
 berquist <- function(tau, B0, ptd, msk) {
+  size <- nrow(B0)
   g.obj = function(theta) {
     if (is.vector(theta))
     {
-      outer(exp(theta[11] * (1:10)), theta[1:10])
+      outer(exp(theta[(size + 1)] * (1:size)), theta[1:size])
     }
     else
     {
-      array(exp(outer(theta[, 11], (1:10))), c(nrow(theta), 10, 10)) *
-        aperm(array(theta[, (1:10)], c(nrow(theta), 10, 10)), c(1, 3, 2))
+      array(exp(outer(theta[, (size + 1)], (1:size))), c(nrow(theta), size, size)) *
+        aperm(array(theta[, (1:size)], c(nrow(theta), size, size)), c(1, 3, 2))
     }
   }
 
   # Gradient of g
   # Note the gradient is a 3-dimensional function of the parameters theta
-  # with dimensions 11 (=length(theta)), 10, 10.  The first dimension
+  # with dimensions (size + 1) (=length(theta)), size, size.  The first dimension
   # represents the parameters involved in the derivatives
   g.grad = function(theta) {
+    if (length(theta) != (size + 1))
+      stop("theta is not equal to (size - 1) in berquist()")
     abind(aperm(array(rep(
-      exp(theta[11] * (1:10)), 10 * 10 * 10
-    ), c(10, 10, 10)), c(2, 1, 3)) *
-      outer((1:10), outer(rep(1, 10), (1:10)), "=="),
-    outer((1:10) * exp(theta[11] * (1:10)), theta[1:10]),
+      exp(theta[(size + 1)] * (1:size)), size * size * size
+    ), c(size, size, size)), c(2, 1, 3)) *
+      outer((1:size), outer(rep(1, size), (1:size)), "=="),
+    outer((1:size) * exp(theta[(size + 1)] * (1:size)), theta[1:size]),
     along = 1)
   }
 
   # Hessian of g
   # Note the Hessian is a 4-dimensional function of the parameters theta
-  # with dimensions 11 (=length(theta)), 11, 10, 10.  First two dimensions
+  # with dimensions (size + 1) (=length(theta)), (size + 1), size, size.  First two dimensions
   # represent the parameters involved in the partial derivatives
   g.hess = function(theta)  {
-    aa = aperm(outer(diag(rep(1, 10)),
-                     array((1:10) * exp((
-                       1:10
-                     ) * theta[11]), c(10, 1))), c(1, 4, 3, 2))
-    abind(abind(array(0, c(10, 10, 10, 10)), aa, along = 2),
+    if (length(theta) != (size + 1))
+      stop("theta is not equal to (size - 1) in berquist()")
+    aa = aperm(outer(diag(rep(1, size)),
+                     array((1:size) * exp((
+                       1:size
+                     ) * theta[(size + 1)]), c(size, 1))), c(1, 4, 3, 2))
+    abind(abind(array(0, c(size, size, size, size)), aa, along = 2),
           abind(aperm(aa, c(2, 1, 3, 4)),
-                array(outer((1:10) ^ 2 * exp((1:10) * theta[11]), theta[(1:10)]
-                ), c(1, 1, 10, 10)),
+                array(outer((1:size) ^ 2 * exp((1:size) * theta[(size + 1)]), theta[(1:size)]
+                ), c(1, 1, size, size)),
                 along = 2),
           along = 1)
   }
@@ -65,18 +70,18 @@ berquist <- function(tau, B0, ptd, msk) {
   # start values based on incrementals from classic chain ladder
   ptd = ((!ptd == 0) * ptd) + (ptd == 0) * mean(ptd)
   tmp = c((
-    colSums(B0[, 2:10] + 0 * B0[, 1:9], na.rm = TRUE) /
-      colSums(B0[, 1:9] + 0 * B0[, 2:10], na.rm = TRUE)
+    colSums(B0[, 2:size] + 0 * B0[, 1:(size - 1)], na.rm = TRUE) /
+      colSums(B0[, 1:(size - 1)] + 0 * B0[, 2:size], na.rm = TRUE)
   ),
   1)
-  yy = 1 / (cumprod(tmp[11 - (1:10)]))[11 - (1:10)]
-  xx = yy - c(0, yy[1:9])
-  ww = t(array(xx, c(10, 10)))
-  uv = ptd / ((10 == rowSums(msk)) + (10 > rowSums(msk)) * rowSums(msk *
+  yy = 1 / (cumprod(tmp[(size + 1) - (1:size)]))[(size + 1) - (1:size)]
+  xx = yy - c(0, yy[1:(size - 1)])
+  ww = t(array(xx, c(size, size)))
+  uv = ptd / ((size == rowSums(msk)) + (size > rowSums(msk)) * rowSums(msk *
                                                                      ww))
-  tmp = na.omit(data.frame(x = 1:10, y = log(uv)))
+  tmp = na.omit(data.frame(x = 1:size, y = log(uv)))
   trd = 0.01
   trd = array(coef(lm(tmp$y ~ tmp$x))[2])[1]
-  a0 = c((xx * mean(uv / (exp(trd)^(1:10)))), trd)
+  a0 = c((xx * mean(uv / (exp(trd)^(1:size)))), trd)
   return(list(g.obj = g.obj, g.grad = g.grad, g.hess = g.hess, a0 = a0))
 }

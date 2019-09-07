@@ -15,6 +15,7 @@
 #' @import abind
 #' @export
 hoerl <- function(tau, B0, ptd, msk) {
+  size <- nrow(B0)
   g.obj = function(theta) {
     if (is.vector(theta))
     {
@@ -22,31 +23,31 @@ hoerl <- function(tau, B0, ptd, msk) {
             colSums(abind(
               tau, abind(tau ^ 2, log(tau), along = 0.5), along = 1
             ) *
-              array(theta[c(2, 3, 4)], c(3, 10, 10))) +
-            theta[5] * array((1:10), c(10, 10)))
+              array(theta[c(2, 3, 4)], c(3, size, size))) +
+            theta[5] * array((1:size), c(size, size)))
     }
     else
     {
       exp(
-        array(theta[, 1], c(nrow(theta), 10, 10)) +
+        array(theta[, 1], c(nrow(theta), size, size)) +
           colSums(abind(
             aperm(array(tau, c(
-              10, 10, nrow(theta)
+              size, size, nrow(theta)
             )), c(3, 1, 2)),
             abind(aperm(array(
-              tau ^ 2, c(10, 10, nrow(theta))
+              tau ^ 2, c(size, size, nrow(theta))
             ), c(3, 1, 2)),
             aperm(array(
-              log(tau), c(10, 10, nrow(theta))
+              log(tau), c(size, size, nrow(theta))
             ), c(3, 1, 2)), along = 0.5),
             along = 1
           ) *
             aperm(array(
-              theta[, c(2, 3, 4)], c(nrow(theta), 3, 10, 10)
+              theta[, c(2, 3, 4)], c(nrow(theta), 3, size, size)
             ), c(2, 1, 3, 4))) +
-          array(theta[, 5], c(nrow(theta), 10, 10)) *
-          aperm(array((1:10), c(
-            10, nrow(theta), 10
+          array(theta[, 5], c(nrow(theta), size, size)) *
+          aperm(array((1:size), c(
+            size, nrow(theta), size
           )), c(2, 1, 3))
       )
     }
@@ -54,54 +55,56 @@ hoerl <- function(tau, B0, ptd, msk) {
 
   # Gradient of g
   # Note the gradient is a 3-dimensional function of the parameters theta
-  # with dimensions 5 (=length(theta)), 10, 10.  The first dimension
+  # with dimensions 5 (=length(theta)), size, size.  The first dimension
   # represents the parameters involved in the derivatives
   g.grad = function(theta) {
-    abind(array(1, c(10, 10)),
+    abind(array(1, c(size, size)),
           abind(tau, abind(
             tau ^ 2,
             abind(log(tau),
-                  array((1:10), c(10, 10)), along = 0.5),
+                  array((1:size), c(size, size)), along = 0.5),
             along = 1
           ),
           along = 1),
-          along = 1) * aperm(array(g.obj(theta), c(10, 10, 5)), c(3, 1, 2))
+          along = 1) * aperm(array(g.obj(theta), c(size, size, 5)), c(3, 1, 2))
   }
 
   # Hessian of g
   # Note the Hessian is a 4-dimensional function of the parameters theta
-  # with dimensions 5 (=length(theta)), 5, 10, 10.  First two dimensions
+  # with dimensions 5 (=length(theta)), 5, size, size.  First two dimensions
   # represent the parameters involved in the partial derivatives
   g.hess = function(theta)  {
+    if (length(theta) != 5)
+      stop("theta does not equal 5 in hoerl()")
     aa = aperm(array(abind(
-      array(1, c(10, 10)),
+      array(1, c(size, size)),
       abind(tau, abind(
         tau ^ 2,
         abind(log(tau),
-              array((1:10), c(10, 10)), along =
+              array((1:size), c(size, size)), along =
                 0.5),
         along = 1
       ),
       along = 1),
       along = 1
-    ), c(5, 10, 10, 5)),
+    ), c(5, size, size, 5)),
     c(4, 1, 2, 3))
-    aa * aperm(aa, c(2, 1, 3, 4)) * aperm(array(g.obj(theta), c(10, 10, 5, 5)), c(3, 4, 1, 2))
+    aa * aperm(aa, c(2, 1, 3, 4)) * aperm(array(g.obj(theta), c(size, size, 5, 5)), c(3, 4, 1, 2))
   }
 
   # Base starting values on classic chain ladder forecasts and inherent trend
   ptd = ((!ptd == 0) * ptd) + (ptd == 0) * mean(ptd)
   tmp = c((
-    colSums(B0[, 2:10] + 0 * B0[, 1:9], na.rm = TRUE) /
-      colSums(B0[, 1:9] + 0 * B0[, 2:10], na.rm = TRUE)
+    colSums(B0[, 2:size] + 0 * B0[, 1:(size - 1)], na.rm = TRUE) /
+      colSums(B0[, 1:(size - 1)] + 0 * B0[, 2:size], na.rm = TRUE)
   ),
   1)
-  yy = 1 / (cumprod(tmp[11 - (1:10)]))[11 - (1:10)]
-  xx = yy - c(0, yy[1:9])
-  ww = t(array(xx, c(10, 10)))
-  uv = ptd / ((10 == rowSums(msk)) + (10 > rowSums(msk)) * rowSums(msk *
+  yy = 1 / (cumprod(tmp[(size + 1) - (1:size)]))[(size + 1) - (1:size)]
+  xx = yy - c(0, yy[1:(size - 1)])
+  ww = t(array(xx, c(size, size)))
+  uv = ptd / ((size == rowSums(msk)) + (size > rowSums(msk)) * rowSums(msk *
                                                                      ww))
-  tmp = na.omit(data.frame(x = 1:10, y = log(uv)))
+  tmp = na.omit(data.frame(x = 1:size, y = log(uv)))
   trd = 0.01
   trd = array(coef(lm(tmp$y ~ tmp$x))[2])[1]
   tmp = na.omit(data.frame(
