@@ -19,9 +19,9 @@ capecod(tau, B0, ptd, msk)
 
 \item{B0}{development triangle}
 
-\item{msk}{mask for triangle}
+\item{ptd}{do not know}
 
-\item{theta}{do not know}
+\item{msk}{mask for triangle}
 }
 \description{
 Create list for Kramer Chain Ladder parmaterization model

@@ -10,7 +10,6 @@
 #' average paid to date.  Because of this restriction the incremental averages
 #' are expressed as a percentage times the expected ultimate by row.
 #' Formulae all assume a full, square development triangle.
-#' @param theta do not know
 #' @param tau do not know
 #' @param B0 development triangle
 #' @param ptd do not know

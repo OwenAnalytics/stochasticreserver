@@ -1,3 +1,8 @@
+#' Get the long description of a model
+#'
+#' @return Long description of a model as a character vector of length one.
+#' @param model character vector of length one having the short name of the
+#' model.
 #' @export
 model_description <- function(model) {
   if (model == "Berquist") {

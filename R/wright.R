@@ -8,7 +8,6 @@
 #' both.
 #' Here g.obj is Wright's operational time model with separate level by
 #' accident year
-#' @param theta do not know
 #' @param tau do not know
 #' @param B0 development triangle
 #' @param ptd do not know
@@ -17,7 +16,7 @@
 #' @importFrom stats coef lm na.omit
 #' @import abind
 #' @export
-wright <- function(theta, tau, B0, ptd, msk) {
+wright <- function(tau, B0, ptd, msk) {
   g.obj = function(theta) {
     if (is.vector(theta))
     {

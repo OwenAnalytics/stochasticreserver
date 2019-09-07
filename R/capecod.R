@@ -8,9 +8,9 @@
 #' row for each simulated parameter, so g.obj must be flexible enough to handle
 #' both.
 #' Here g.obj is nonlinear and based on the Kramer Chain Ladder parmaterization
-#' @param theta do not know
 #' @param tau do not know
 #' @param B0 development triangle
+#' @param ptd do not know
 #' @param msk mask for triangle
 #'
 #' @importFrom stats coef lm na.omit

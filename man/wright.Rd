@@ -5,11 +5,9 @@
 \title{Create list for Generalized Hoerl Curve with individual accident year levels
 (Wright's)}
 \usage{
-wright(theta, tau, B0, ptd, msk)
+wright(tau, B0, ptd, msk)
 }
 \arguments{
-\item{theta}{do not know}
-
 \item{tau}{do not know}
 
 \item{B0}{development triangle}

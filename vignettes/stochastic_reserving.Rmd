@@ -51,6 +51,7 @@ B0 = matrix(c(670.25868,1480.24821,1938.53579,2466.25469,2837.84888,3003.52391,
             723.30282,NA,NA,NA,NA,NA,NA,NA,NA,NA),10,10,byrow = TRUE)
 dnom = c(39161.,38672.4628,41801.048,42263.2794,41480.8768,40214.3872,43598.5056,
        42118.324,43479.4248,49492.4106)
+
 size <- nrow(B0)
 # Identify model to be used
 #   Berquist for the Berquist-Sherman Incremental Severity

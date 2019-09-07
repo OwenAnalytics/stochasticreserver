@@ -14,8 +14,6 @@ berquist(tau, B0, ptd, msk)
 \item{ptd}{do not know}
 
 \item{msk}{mask for triangle}
-
-\item{theta}{do not know}
 }
 \description{
 g - Assumed loss emergence model, a function of the parameters a.

@@ -6,7 +6,6 @@
 #' row for each simulated parameter, so g.obj must be flexible enough to handle
 #' both.
 #' Here g.obj is Wright's operational time model with trend added
-#' @param theta do not know
 #' @param tau do not know
 #' @param B0 development triangle
 #' @param ptd do not know

@@ -9,7 +9,6 @@
 #' row for each simulated parameter, so g.obj must be flexible enough to handle
 #' both.
 #' Here g.obj is the Berquist-Sherman incremental severity model
-#' @param theta do not know
 #' @param tau do not know
 #' @param B0 development triangle
 #' @param ptd do not know

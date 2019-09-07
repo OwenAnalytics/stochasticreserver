@@ -20,8 +20,6 @@ hoerl(tau, B0, ptd, msk)
 \item{ptd}{do not know}
 
 \item{msk}{mask for triangle}
-
-\item{theta}{do not know}
 }
 \description{
 Create list for Generalized Hoerl Curve Model with trend
