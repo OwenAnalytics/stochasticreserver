@@ -3,6 +3,7 @@
 export(berquist)
 export(capecod)
 export(chain)
+export(get_incremental_avg_matrix)
 export(hoerl)
 export(model_description)
 export(wright)
