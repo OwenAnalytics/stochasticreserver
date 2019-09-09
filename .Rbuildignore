@@ -3,3 +3,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^R/if_model*
+^\.travis\.yml$     # Used for continuous integration testing with travis
+CODE_OF_CONDUCT.md
+NEWS.Rmd
+README.Rmd

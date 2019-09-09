@@ -1,0 +1,36 @@
+---
+title: "Stochastic Reserving Manual"
+author: "R. Mark Sharp"
+date: "October 03, 2017"
+output: 
+   - rmarkdown::html_vignette
+   - rmarkdown::pdf_document
+   - rmarkdown::latex_document
+   - rmarkdown::word_document
+vignette: >
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteIndexEntry{Stochastic Reserving Manual}
+  %\usepackage[UTF-8]{inputenc}
+---
+
+
+[Introduction]  
+[Summary of Major Functions]   
+[Installation]  
+[Input]    
+[Summary Statistics]    
+[Software Development]    
+
+```{r child = "manual_components/_introduction.Rmd", ref.label = "introduction"}
+```
+```{r child = "manual_components/_summary_of_major_functions.Rmd", ref.label = "summary-of-functions"}
+```
+```{r child = "manual_components/_installation.Rmd", echo = TRUE, ref.label = "gh-installation"}
+```
+```{r child = "manual_components/_input.Rmd", ref.label = "input"}
+```
+```{r child = "manual_components/_summary_statistics.Rmd", ref.label = "summary-statistics"}
+```
+```{r child = "manual_components/_software_development.Rmd", ref.label = "software_development"}
+```
+

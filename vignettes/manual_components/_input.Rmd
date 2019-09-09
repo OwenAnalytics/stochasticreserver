@@ -1,0 +1,18 @@
+---
+title: "Input"
+author: "R. Mark Sharp"
+date: "08/09/2019"
+output: 
+   - rmarkdown::html_vignette
+   - rmarkdown::pdf_document
+   - rmarkdown::latex_document
+   - rmarkdown::html_vignette
+   - rmarkdown::word_document
+vignette: >
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteIndexEntry{Stochastic Reserving Manual}
+  %\usepackage[UTF-8]{inputenc}
+---
+
+## Input  
+stub

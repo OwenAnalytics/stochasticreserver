@@ -1,0 +1,32 @@
+---
+  output: github_document
+---
+  [![Rdoc](http://www.rdocumentation.org/badges/version/roxygen2)](http://www.rdocumentation.org/packages/roxygen2)
+[![Build Status](https://travis-ci.org/rmsharp/stochasticreserver.svg?branch=master)](https://travis-ci.org/rmsharp/stochasticreserver)
+[![codecov](https://codecov.io/gh/rmsharp/stochasticreserver/branch/master/graph/badge.svg)](https://codecov.io/gh/rmsharp/stochasticreserver)
+<!--[![Rdoc](http://www.rdocumentation.org/badges/version/RDocumentation)](http://www.rdocumentation.org/packages/RDocumentation)
+<!--[![Rdoc](http://www.rdocumentation.org/badges/version/stochasticreserver)](http://www.rdocumentation.org/packages/gh/rmsharp/stochasticreserver)
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+  ```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+# stochasticreserver -- Version 0.1.0
+```{r child = "vignettes/manual_components/_introduction.Rmd", ref = "introduction"}
+```
+```{r child = "vignettes/manual_components/_installation.Rmd", ref = "installation"}
+```
+```{r child = "vignettes/manual_components/_summary_of_major_functions.Rmd", ref = "summary_of_functions"}
+```
+
+Find online documentation at [https://rmsharp.github.io/stochasticreserver/](https://rmsharp.github.io/stochasticreserver/).
+
+
+**For more information see:**
+    [A Flexible Framework for Stochastic Reserving Models
+    ](http://www.variancejournal.org/issues/07-02/123.pdf "Original Paper")

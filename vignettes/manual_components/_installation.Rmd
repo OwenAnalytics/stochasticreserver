@@ -1,0 +1,26 @@
+---
+title: "Installation"
+author: "R. Mark Sharp"
+date: "08/09/2019"
+output: 
+   - rmarkdown::pdf_document
+   - rmarkdown::latex_document
+   - rmarkdown::html_vignette
+   - rmarkdown::word_document
+vignette: >
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteIndexEntry{Stochastic Reserving Manual}
+  %\usepackage[UTF-8]{inputenc}
+---
+## Installation
+
+You can install **stochasticreserver** from github with:
+
+```{r gh-installation, eval = FALSE, echo=TRUE}
+install.packages("devtools")
+devtools::install_github("rmsharp/stochasticreserver")
+
+```
+
+All missing dependencies should be automatically installed.
+
