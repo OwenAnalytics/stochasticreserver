@@ -3,30 +3,32 @@
 #' g itself
 #' Basic design is for g to be a function of a single parameter vector, however
 #' in the simulations it is necessary to work on a matrix of parameters, one
-#' row for each simulated parameter, so g.obj must be flexible enough to handle
+#' row for each simulated parameter, so g_obj must be flexible enough to handle
 #' both.
-#' Here g.obj is a version of the Cape Cod model but with the restriction
+#' Here g_obj is a version of the Cape Cod model but with the restriction
 #' that the expected cumulative averge payments to date equal the actual
 #' average paid to date.  Because of this restriction the incremental averages
 #' are expressed as a percentage times the expected ultimate by row.
 #' Formulae all assume a full, square development triangle.
 #' @param tau do not know
 #' @param B0 development triangle
-#' @param ptd do not know
-#' @param msk mask for triangle
+#' @param paid_to_date numeric vector of length \code{size}. It is the lower diagnal of
+#' the development triangle in row order. It represents the amount paid to date.
+#' @param msk is a mask matrix of allowable data, upper triangular assuming same
+#' development increments as exposure increments
 #'
 #' @importFrom stats coef lm na.omit
 #' @import abind
 #' @export
-chain <- function(tau, B0, ptd, msk) {
+chain <- function(tau, B0, paid_to_date, msk) {
   size <- nrow(B0)
-  g.obj = function(theta) {
+  g_obj = function(theta) {
     if (is.vector(theta))
     {
       th = t(array(c(theta[1:(size - 1)], (
         1 - sum(theta[1:(size - 1)])
       )), c(size, size)))
-      uv = ptd / ((size == rowSums(msk)) + (size > rowSums(msk)) * rowSums(msk *
+      uv = paid_to_date / ((size == rowSums(msk)) + (size > rowSums(msk)) * rowSums(msk *
                                                                          th))
       th * array(uv, c(size, size))
     }
@@ -37,8 +39,8 @@ chain <- function(tau, B0, ptd, msk) {
       )),
       c(nrow(theta), size, size)), c(1, 3, 2))
       mska = aperm(array(msk, c(size, size, nrow(theta))), c(3, 1, 2))
-      ptda = t(array(ptd, c(size, nrow(theta))))
-      uva = ptda / ((size == rowSums(mska, dims = 2))
+      paid_to_datea = t(array(paid_to_date, c(size, nrow(theta))))
+      uva = paid_to_datea / ((size == rowSums(mska, dims = 2))
                     + (size > rowSums(mska, dims = 2)) * rowSums(mska * th, dims =
                                                                  2))
       th * array(uva, c(nrow(theta), size, size))
@@ -59,7 +61,7 @@ chain <- function(tau, B0, ptd, msk) {
   # Note the gradient is a 3-dimensional function of the parameters theta
   # with dimensions (size - 1) (=length(theta)), size, size.  The first dimension
   # represents the parameters involved in the derivatives
-  g.grad = function(theta) {
+  g_grad = function(theta) {
     if (length(theta) != (size - 1))
       stop("theta is not equal to (size - 1) in chain()")
     th = t(array(c(theta, (1 - sum(
@@ -67,7 +69,7 @@ chain <- function(tau, B0, ptd, msk) {
     ))), c(size, size)))
     psm = rowSums(msk * th)
     psc = rowSums(th[, 1:(size - 1)] * (1 - msk[, 1:(size - 1)]))
-    uv = ptd / ((size == rsm) + (size > rsm) * psm)
+    uv = paid_to_date / ((size == rsm) + (size > rsm) * psm)
     uva = aperm(array(uv, c(size, size, (size - 1))), c(3, 1, 2))
     thj = aperm(array(outer((1 / psm), c(
       theta, 1 - sum(theta)
@@ -101,13 +103,13 @@ chain <- function(tau, B0, ptd, msk) {
   # Note the Hessian is a 4-dimensional function of the parameters theta
   # with dimensions (size - 1) (=length(theta)), (size - 1), size, size.  First two dimensions
   # represent the parameters involved in the partial derivatives
-  g.hess = function(theta)  {
+  g_hess = function(theta)  {
     if (length(theta) != (size - 1))
       stop("theta is not equal to (size - 1) in chain()")
     th = t(array(c(theta, (1 - sum(theta))), c(size, size)))
     psm = rowSums(msk * th)
     psc = rowSums(th[, 1:(size - 1)] * (1 - msk[, 1:(size - 1)]))
-    uv = ptd / (((size == rowSums(msk)) + (size > rowSums(msk)) * psm) ^ 2)
+    uv = paid_to_date / (((size == rowSums(msk)) + (size > rowSums(msk)) * psm) ^ 2)
     psc = rowSums(th[, 1:(size - 1)] * (1 - msk[, 1:(size - 1)]))
     uva = aperm(array(uv, c(size, size, (size - 1), (size - 1))), c(3, 4, 1, 2))
     thj = aperm(array(outer((1 / psm), 2 * c(
@@ -134,9 +136,9 @@ chain <- function(tau, B0, ptd, msk) {
   yy = 1 / (cumprod(tmp[(size + 1) - (1:size)]))[(size + 1) - (1:size)]
   a0 = (yy - c(0, yy[1:(size - 1)]))[1:(size - 1)]
   return(list(
-    g.obj = g.obj,
-    g.grad = g.grad,
-    g.hess = g.hess,
+    g_obj = g_obj,
+    g_grad = g_grad,
+    g_hess = g_hess,
     a0 = a0
   ))
 }

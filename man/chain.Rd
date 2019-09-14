@@ -4,24 +4,26 @@
 \alias{chain}
 \title{Create list for Cape Cod model}
 \usage{
-chain(tau, B0, ptd, msk)
+chain(tau, B0, paid_to_date, msk)
 }
 \arguments{
 \item{tau}{do not know}
 
 \item{B0}{development triangle}
 
-\item{ptd}{do not know}
+\item{paid_to_date}{numeric vector of length \code{size}. It is the lower diagnal of
+the development triangle in row order. It represents the amount paid to date.}
 
-\item{msk}{mask for triangle}
+\item{msk}{is a mask matrix of allowable data, upper triangular assuming same
+development increments as exposure increments}
 }
 \description{
 g itself
 Basic design is for g to be a function of a single parameter vector, however
 in the simulations it is necessary to work on a matrix of parameters, one
-row for each simulated parameter, so g.obj must be flexible enough to handle
+row for each simulated parameter, so g_obj must be flexible enough to handle
 both.
-Here g.obj is a version of the Cape Cod model but with the restriction
+Here g_obj is a version of the Cape Cod model but with the restriction
 that the expected cumulative averge payments to date equal the actual
 average paid to date.  Because of this restriction the incremental averages
 are expressed as a percentage times the expected ultimate by row.

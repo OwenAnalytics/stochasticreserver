@@ -8,20 +8,22 @@ Note g must be matrix-valued with size rows and size columns
 g itself
 Basic design is for g to be a function of a single parameter vector, however
 in the simulations it is necessary to work on a matrix of parameters, one
-row for each simulated parameter, so g.obj must be flexible enough to handle
+row for each simulated parameter, so g_obj must be flexible enough to handle
 both.
-Here g.obj is nonlinear and based on the Kramer Chain Ladder parmaterization}
+Here g_obj is nonlinear and based on the Kramer Chain Ladder parmaterization}
 \usage{
-capecod(tau, B0, ptd, msk)
+capecod(tau, B0, paid_to_date, msk)
 }
 \arguments{
 \item{tau}{do not know}
 
 \item{B0}{development triangle}
 
-\item{ptd}{do not know}
+\item{paid_to_date}{numeric vector of length \code{size}. It is the lower diagnal of
+the development triangle in row order. It represents the amount paid to date.}
 
-\item{msk}{mask for triangle}
+\item{msk}{is a mask matrix of allowable data, upper triangular assuming same
+development increments as exposure increments}
 }
 \description{
 Create list for Kramer Chain Ladder parmaterization model
@@ -30,7 +32,7 @@ Note g must be matrix-valued with size rows and size columns
 g itself
 Basic design is for g to be a function of a single parameter vector, however
 in the simulations it is necessary to work on a matrix of parameters, one
-row for each simulated parameter, so g.obj must be flexible enough to handle
+row for each simulated parameter, so g_obj must be flexible enough to handle
 both.
-Here g.obj is nonlinear and based on the Kramer Chain Ladder parmaterization
+Here g_obj is nonlinear and based on the Kramer Chain Ladder parmaterization
 }
