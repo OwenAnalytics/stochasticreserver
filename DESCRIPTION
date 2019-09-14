@@ -1,7 +1,7 @@
 Package: stochasticreserver
 Type: Package
 Title: Flexible Framework for Stochastic Reserving Models
-Version: 0.1.0
+Version: 0.1.1
 Author: Roger Hayne
 Maintainer: R. Mark Sharp <rmsharp@me.com>
 Authors@R: c(
