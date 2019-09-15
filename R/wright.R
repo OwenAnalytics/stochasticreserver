@@ -13,15 +13,17 @@
 #' aged, using the variable t to represent what he calls “operational time.”
 
 #' @param B0 development triangle
-#' @param paid_to_date numeric vector of length \code{size}. It is the lower diagnal of
+#' @param paid_to_date numeric vector of length \code{size}. It is the lower
+#' diagnal of
 #' the development triangle in row order. It represents the amount paid to date.
-#' @param msk is a mask matrix of allowable data, upper triangular assuming same
+#' @param upper_triangle_mask is a mask matrix of allowable data, upper
+#' triangular assuming same
 #' development increments as exposure increments
 #'
 #' @importFrom stats coef lm na.omit
 #' @import abind
 #' @export
-wright <- function(B0, paid_to_date, msk) {
+wright <- function(B0, paid_to_date, upper_triangle_mask) {
   size <- nrow(B0)
   # Set tau (representing operational time) to have columns with entries 1
   # through size
@@ -62,7 +64,8 @@ wright <- function(B0, paid_to_date, msk) {
           abind(tau, abind(tau ^ 2, log(tau),
                            along = 0.5),
                 along = 1),
-          along = 1) * aperm(array(g_obj(theta), c(size, size, (size + 3))), c(3, 1, 2))
+          along = 1) * aperm(array(g_obj(theta), c(size, size, (size + 3))),
+                             c(3, 1, 2))
   }
 
   # Hessian of g
@@ -79,11 +82,13 @@ wright <- function(B0, paid_to_date, msk) {
                      along = 1),
                c((size + 3), size, size, (size + 3)))
     aperm(aa, c(4, 1, 2, 3)) * aperm(aa, c(1, 4, 2, 3)) *
-      aperm(array(g_obj(theta), c(size, size, (size + 3), (size + 3))), c(3, 4, 1, 2))
+      aperm(array(g_obj(theta), c(size, size, (size + 3), (size + 3))),
+            c(3, 4, 1, 2))
   }
 
   # Base starting values on classic chain ladder forecasts
-  paid_to_date = ((!paid_to_date == 0) * paid_to_date) + (paid_to_date == 0) * mean(paid_to_date)
+  paid_to_date = ((!paid_to_date == 0) * paid_to_date) + (paid_to_date == 0) *
+    mean(paid_to_date)
   tmp = c((
     colSums(B0[, 2:size] + 0 * B0[, 1:(size - 1)], na.rm = TRUE) /
       colSums(B0[, 1:(size - 1)] + 0 * B0[, 2:size], na.rm = TRUE)
@@ -92,8 +97,9 @@ wright <- function(B0, paid_to_date, msk) {
   yy = 1 / (cumprod(tmp[(size + 1) - (1:size)]))[(size + 1) - (1:size)]
   xx = yy - c(0, yy[1:(size - 1)])
   ww = t(array(xx, c(size, size)))
-  uv = paid_to_date / ((size == rowSums(msk)) + (size > rowSums(msk)) * rowSums(msk *
-                                                                     ww))
+  uv = paid_to_date / ((size == rowSums(upper_triangle_mask)) +
+                         (size > rowSums(upper_triangle_mask)) *
+                         rowSums(upper_triangle_mask * ww))
   tmp = na.omit(data.frame(
     x1 = c(tau),
     x2 = c(tau ^ 2),

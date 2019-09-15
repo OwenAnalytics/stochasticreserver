@@ -4,7 +4,7 @@
 \alias{chain}
 \title{Create list for Cape Cod model}
 \usage{
-chain(B0, paid_to_date, msk)
+chain(B0, paid_to_date, upper_triangle_mask)
 }
 \arguments{
 \item{B0}{development triangle}
@@ -12,7 +12,7 @@ chain(B0, paid_to_date, msk)
 \item{paid_to_date}{numeric vector of length \code{size}. It is the lower diagnal of
 the development triangle in row order. It represents the amount paid to date.}
 
-\item{msk}{is a mask matrix of allowable data, upper triangular assuming same
+\item{upper_triangle_mask}{is a mask matrix of allowable data, upper triangular assuming same
 development increments as exposure increments}
 }
 \description{

@@ -60,9 +60,9 @@ size <- nrow(B0)
 #   Hoerl for the Generalized Hoerl Curve Model with trend
 #   Wright for the Generalized Hoerl Curve with individual accident year levels
 #   Chain for the Chain Ladder model
-#model = "Berquist"
+model = "Berquist"
 #model = "CapeCod"
-model = "Hoerl"
+#model = "Hoerl"
 #model = "Wright"
 #model = "Chain"
 # Toggle graphs off if desired
@@ -84,11 +84,11 @@ logd = log(matrix(dnom, size, size))
 rowNum = row(A0)
 colNum = col(A0)
 
-#. msk is a mask matrix of allowable data, upper triangular assuming same
+#. upper_triangle_mask is a mask matrix of allowable data, upper triangular assuming same
 #' development increments as exposure increments
 #' msn is a mask matrix that picks off the first forecast diagonal
 #' msd is a mask matrix that picks off the to date diagonal
-msk = (size - rowNum) >= colNum - 1
+upper_triangle_mask = (size - rowNum) >= colNum - 1
 msn = (size - rowNum) == colNum - 2
 msd = (size - rowNum) == colNum - 1
 
@@ -102,15 +102,15 @@ paid_to_date = rowSums(B0 * msd, na.rm = TRUE)
 ```{r model-specific-code}
 
   if (model == "Berquist") {
-    model_lst <- berquist(B0, paid_to_date, msk)
+    model_lst <- berquist(B0, paid_to_date, upper_triangle_mask)
   } else if (model == "CapeCod") {
-    model_lst <- capecod(B0, paid_to_date, msk)
+    model_lst <- capecod(B0, paid_to_date, upper_triangle_mask)
   } else if (model == "Hoerl") {
-    model_lst <- hoerl(B0, paid_to_date, msk)
+    model_lst <- hoerl(B0, paid_to_date, upper_triangle_mask)
   } else if (model == "Wright") {
-    model_lst <- wright(B0, paid_to_date, msk)
+    model_lst <- wright(B0, paid_to_date, upper_triangle_mask)
   } else if (model == "Chain") {
-    model_lst <- chain(B0, paid_to_date, msk)
+    model_lst <- chain(B0, paid_to_date, upper_triangle_mask)
   }
 g_obj <- model_lst$g_obj
 g_grad <- model_lst$g_grad
@@ -348,7 +348,7 @@ Want 10,000 simulations, but exceeds R capacity, so do in batches of 5,000
 
 ```{r simulation}
 nsim = 5000
-smsk = aperm(array(c(msk), c(size, size, nsim)), c(3, 1, 2))
+smsk = aperm(array(c(upper_triangle_mask), c(size, size, nsim)), c(3, 1, 2))
 smsn = aperm(array(c(msn), c(size, size, nsim)), c(3, 1, 2))
 
 if (simulation) {
@@ -439,9 +439,9 @@ if (graphs) {
                 y = dnorm((density(sim[, 11]))$x,
                           sum(matrix(c(
                             dnom
-                          ), size, size) * mean * !msk),
+                          ), size, size) * mean * !upper_triangle_mask),
                           sqrt(sum(
-                            matrix(c(dnom), size, size) ^ 2 * var * !msk
+                            matrix(c(dnom), size, size) ^ 2 * var * !upper_triangle_mask
                           ))))
     MASS::truehist(sim[, 11],
              ymax = max(proc$y),

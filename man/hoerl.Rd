@@ -10,16 +10,17 @@ row for each simulated parameter, so g_obj must be flexible enough to handle
 both.
 Here g_obj is Wright's operational time model with trend added}
 \usage{
-hoerl(B0, paid_to_date, msk)
+hoerl(B0, paid_to_date, upper_triangle_mask)
 }
 \arguments{
 \item{B0}{development triangle}
 
-\item{paid_to_date}{numeric vector of length \code{size}. It is the lower diagnal of
+\item{paid_to_date}{numeric vector of length \code{size}. It is the lower
+diagnal of
 the development triangle in row order. It represents the amount paid to date.}
 
-\item{msk}{is a mask matrix of allowable data, upper triangular assuming same
-development increments as exposure increments}
+\item{upper_triangle_mask}{is a mask matrix of allowable data, upper
+triangular assuming same development increments as exposure increments}
 }
 \description{
 Create list for Generalized Hoerl Curve Model with trend

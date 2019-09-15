@@ -13,13 +13,13 @@
 #' @param B0 development triangle
 #' @param paid_to_date numeric vector of length \code{size}. It is the lower diagnal of
 #' the development triangle in row order. It represents the amount paid to date.
-#' @param msk is a mask matrix of allowable data, upper triangular assuming same
+#' @param upper_triangle_mask is a mask matrix of allowable data, upper triangular assuming same
 #' development increments as exposure increments
 #'
 #' @importFrom stats coef lm na.omit
 #' @import abind
 #' @export
-chain <- function(B0, paid_to_date, msk) {
+chain <- function(B0, paid_to_date, upper_triangle_mask) {
   size <- nrow(B0)
   g_obj = function(theta) {
     if (is.vector(theta))
@@ -27,7 +27,7 @@ chain <- function(B0, paid_to_date, msk) {
       th = t(array(c(theta[1:(size - 1)], (
         1 - sum(theta[1:(size - 1)])
       )), c(size, size)))
-      uv = paid_to_date / ((size == rowSums(msk)) + (size > rowSums(msk)) * rowSums(msk *
+      uv = paid_to_date / ((size == rowSums(upper_triangle_mask)) + (size > rowSums(upper_triangle_mask)) * rowSums(upper_triangle_mask *
                                                                          th))
       th * array(uv, c(size, size))
     }
@@ -37,7 +37,7 @@ chain <- function(B0, paid_to_date, msk) {
         1 - rowSums(theta[, 1:(size - 1)])
       )),
       c(nrow(theta), size, size)), c(1, 3, 2))
-      mska = aperm(array(msk, c(size, size, nrow(theta))), c(3, 1, 2))
+      mska = aperm(array(upper_triangle_mask, c(size, size, nrow(theta))), c(3, 1, 2))
       paid_to_datea = t(array(paid_to_date, c(size, nrow(theta))))
       uva = paid_to_datea / ((size == rowSums(mska, dims = 2))
                     + (size > rowSums(mska, dims = 2)) * rowSums(mska * th, dims =
@@ -49,12 +49,12 @@ chain <- function(B0, paid_to_date, msk) {
   v1 = aperm(array((1:size), c(size, size, (size - 1))),
              c(3, 2, 1)) ==
     array((1:(size - 1)), c((size - 1), size, size))
-  v2 = aperm(array(msk[, 1:(size - 1)], c(size, (size - 1), size)),
+  v2 = aperm(array(upper_triangle_mask[, 1:(size - 1)], c(size, (size - 1), size)),
              c(2, 1, 3)) &
-    aperm(array(msk, c(size, size, (size - 1))),
+    aperm(array(upper_triangle_mask, c(size, size, (size - 1))),
           c(3, 1, 2))
   v2[, 1, ] = FALSE
-  rsm = rowSums(msk)
+  rsm = rowSums(upper_triangle_mask)
 
   # Gradient of g
   # Note the gradient is a 3-dimensional function of the parameters theta
@@ -66,8 +66,8 @@ chain <- function(B0, paid_to_date, msk) {
     th = t(array(c(theta, (1 - sum(
       theta
     ))), c(size, size)))
-    psm = rowSums(msk * th)
-    psc = rowSums(th[, 1:(size - 1)] * (1 - msk[, 1:(size - 1)]))
+    psm = rowSums(upper_triangle_mask * th)
+    psc = rowSums(th[, 1:(size - 1)] * (1 - upper_triangle_mask[, 1:(size - 1)]))
     uv = paid_to_date / ((size == rsm) + (size > rsm) * psm)
     uva = aperm(array(uv, c(size, size, (size - 1))), c(3, 1, 2))
     thj = aperm(array(outer((1 / psm), c(
@@ -100,26 +100,29 @@ chain <- function(B0, paid_to_date, msk) {
 
   # Hessian of g
   # Note the Hessian is a 4-dimensional function of the parameters theta
-  # with dimensions (size - 1) (=length(theta)), (size - 1), size, size.  First two dimensions
+  # with dimensions (size - 1) (=length(theta)), (size - 1), size, size.
+  # First two dimensions
   # represent the parameters involved in the partial derivatives
   g_hess = function(theta)  {
     if (length(theta) != (size - 1))
       stop("theta is not equal to (size - 1) in chain()")
     th = t(array(c(theta, (1 - sum(theta))), c(size, size)))
-    psm = rowSums(msk * th)
-    psc = rowSums(th[, 1:(size - 1)] * (1 - msk[, 1:(size - 1)]))
-    uv = paid_to_date / (((size == rowSums(msk)) + (size > rowSums(msk)) * psm) ^ 2)
-    psc = rowSums(th[, 1:(size - 1)] * (1 - msk[, 1:(size - 1)]))
-    uva = aperm(array(uv, c(size, size, (size - 1), (size - 1))), c(3, 4, 1, 2))
-    thj = aperm(array(outer((1 / psm), 2 * c(
-      theta, 1 - sum(theta)
-    )),
+    psm = rowSums(upper_triangle_mask * th)
+    psc = rowSums(th[, 1:(size - 1)] *
+                    (1 - upper_triangle_mask[, 1:(size - 1)]))
+    uv = paid_to_date / (((size == rowSums(upper_triangle_mask)) +
+                            (size > rowSums(upper_triangle_mask)) * psm) ^ 2)
+    psc = rowSums(th[, 1:(size - 1)] *
+                    (1 - upper_triangle_mask[, 1:(size - 1)]))
+    uva = aperm(array(uv, c(size, size, (size - 1), (size - 1))),
+                c(3, 4, 1, 2))
+    thj = aperm(array(outer((1 / psm), 2 * c(theta, 1 - sum(theta))),
     c(size, size, (size - 1), (size - 1))),
     c(3, 4, 1, 2))
     xx = uva * (thj * mm1 - mm3 - mm2)
     xx[, , , size] = uva[, , , 1] *
-      (mm5[, , , 1] + mm1[, , , 1] * aperm(array(2 * (1 - psc) / psm,
-                                                 c(size, (size - 1), (size - 1))),
+      (mm5[, , , 1] + mm1[, , , 1] *
+         aperm(array(2 * (1 - psc) / psm, c(size, (size - 1), (size - 1))),
                                            c(2, 3, 1)))
     xx[, , 1, ] = 0
     xx
