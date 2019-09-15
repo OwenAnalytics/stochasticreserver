@@ -49,6 +49,7 @@ B0 = matrix(c(670.25868,1480.24821,1938.53579,2466.25469,2837.84888,3003.52391,
             935.19866,2103.97736,3181.75054,NA,NA,NA,NA,NA,NA,NA,
             759.32467,1584.91057,NA,NA,NA,NA,NA,NA,NA,NA,
             723.30282,NA,NA,NA,NA,NA,NA,NA,NA,NA),10,10,byrow = TRUE)
+# the exposures (claims) used in the denominator
 dnom = c(39161.,38672.4628,41801.048,42263.2794,41480.8768,40214.3872,43598.5056,
        42118.324,43479.4248,49492.4106)
 
@@ -104,15 +105,15 @@ paid_to_date = rowSums(B0 * msd, na.rm = TRUE)
 ```{r model-specific-code}
 
   if (model == "Berquist") {
-    model_lst <- berquist(tau, B0, paid_to_date, msk)
+    model_lst <- berquist(B0, paid_to_date, msk)
   } else if (model == "CapeCod") {
-    model_lst <- capecod(tau, B0, paid_to_date, msk)
+    model_lst <- capecod(B0, paid_to_date, msk)
   } else if (model == "Hoerl") {
     model_lst <- hoerl(tau, B0, paid_to_date, msk)
   } else if (model == "Wright") {
     model_lst <- wright(tau, B0, paid_to_date, msk)
   } else if (model == "Chain") {
-    model_lst <- chain(tau, B0, paid_to_date, msk)
+    model_lst <- chain(B0, paid_to_date, msk)
   }
 g_obj <- model_lst$g_obj
 g_grad <- model_lst$g_grad

@@ -7,3 +7,20 @@
 CODE_OF_CONDUCT.md
 NEWS.Rmd
 README.Rmd
+vignettes/figure
+vignettes/figures/*
+^_pkgdown\.yml$
+^\.gitignore$
+^docs$
+vignettes/*\.log$
+vignettes/*\.aux$
+vignettes/*\.out$
+^README\.*\.png$
+^README\.Rmd$       # An Rmarkdown file used to generate README.md
+^cran-comments\.md$ # Comments for CRAN submission
+^NEWS\.md$          # A news file written in Markdown
+^NEWS\.Rmd$          # A news file written in RMarkdown
+CODE_OF_CONDUCT.md
+NEWS.Rmd
+README.Rmd
+.travis.yml

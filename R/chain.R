@@ -10,7 +10,6 @@
 #' average paid to date.  Because of this restriction the incremental averages
 #' are expressed as a percentage times the expected ultimate by row.
 #' Formulae all assume a full, square development triangle.
-#' @param tau do not know
 #' @param B0 development triangle
 #' @param paid_to_date numeric vector of length \code{size}. It is the lower diagnal of
 #' the development triangle in row order. It represents the amount paid to date.
@@ -20,7 +19,7 @@
 #' @importFrom stats coef lm na.omit
 #' @import abind
 #' @export
-chain <- function(tau, B0, paid_to_date, msk) {
+chain <- function(B0, paid_to_date, msk) {
   size <- nrow(B0)
   g_obj = function(theta) {
     if (is.vector(theta))

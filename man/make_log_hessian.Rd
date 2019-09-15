@@ -4,12 +4,15 @@
 \alias{make_log_hessian}
 \title{Make Hessian of the objective function}
 \usage{
-make_log_hessian(a, A, g_obj, g_grad, g_hess)
+make_log_hessian(a, A, dnom, g_obj, g_grad, g_hess)
 }
 \arguments{
 \item{a}{do not know}
 
 \item{A}{do not know}
+
+\item{dnom}{numeric vector representing the exposures (claims) used in the
+denominator}
 
 \item{g_obj}{objective function}
 

@@ -10,12 +10,17 @@
 #' hessian-of-objective-function
 #' @param a do not know
 #' @param A do not know
+#' @param dnom numeric vector representing the exposures (claims) used in the
+#' denominator
 #' @param g_obj objective function
 #' @param g_grad gradient function
 #' @param g_hess hessian function
 #' @export
-make_log_hessian <- function(a, A, g_obj, g_grad, g_hess) {
+make_log_hessian <- function(a, A, dnom, g_obj, g_grad, g_hess) {
+  size <- length(dnom)
   npar = length(a) - 2
+  # Generate a matrix to reflect exposure count in the variance structure
+  logd = log(matrix(dnom, size, size))
   p = a[npar + 2]
   Av = aperm(array(A, c(size, size, npar)), c(3, 1, 2))
   Am = aperm(array(A, c(size, size, npar, npar)), c(3, 4, 1, 2))

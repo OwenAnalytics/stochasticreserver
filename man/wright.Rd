@@ -8,7 +8,8 @@
 wright(tau, B0, paid_to_date, msk)
 }
 \arguments{
-\item{tau}{do not know}
+\item{tau}{square integer matrix of \code{size} rows by \code{size} columns
+representing \emph{operational time}}
 
 \item{B0}{development triangle}
 
@@ -26,4 +27,8 @@ row for each simulated parameter, so g_obj must be flexible enough to handle
 both.
 Here g_obj is Wright's operational time model with separate level by
 accident year
+}
+\details{
+Wright considered two similar curves representing loss volume as a year
+aged, using the variable t to represent what he calls “operational time.”
 }

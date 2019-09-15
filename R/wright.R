@@ -8,7 +8,12 @@
 #' both.
 #' Here g_obj is Wright's operational time model with separate level by
 #' accident year
-#' @param tau do not know
+#'
+#' Wright considered two similar curves representing loss volume as a year
+#' aged, using the variable t to represent what he calls “operational time.”
+
+#' @param tau square integer matrix of \code{size} rows by \code{size} columns
+#' representing \emph{operational time}
 #' @param B0 development triangle
 #' @param paid_to_date numeric vector of length \code{size}. It is the lower diagnal of
 #' the development triangle in row order. It represents the amount paid to date.

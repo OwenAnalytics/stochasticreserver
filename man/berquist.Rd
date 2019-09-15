@@ -4,11 +4,9 @@
 \alias{berquist}
 \title{Create list for Berquist-Sherman incremental severity model}
 \usage{
-berquist(tau, B0, paid_to_date, msk)
+berquist(B0, paid_to_date, msk)
 }
 \arguments{
-\item{tau}{do not know}
-
 \item{B0}{development triangle}
 
 \item{paid_to_date}{numeric vector of length \code{size}. It is the lower diagnal of

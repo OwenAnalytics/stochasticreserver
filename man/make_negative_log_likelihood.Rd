@@ -4,12 +4,15 @@
 \alias{make_negative_log_likelihood}
 \title{Make Negative Loglikelihood Function to be Minimized}
 \usage{
-make_negative_log_likelihood(a, A, g_obj)
+make_negative_log_likelihood(a, A, dnom, g_obj)
 }
 \arguments{
 \item{a}{do not know}
 
 \item{A}{do not know}
+
+\item{dnom}{numeric vector representing the exposures (claims) used in the
+denominator}
 
 \item{g_obj}{objective function}
 }

@@ -1,12 +1,18 @@
-# Make Gradient of the objective function
+#'  Make Gradient of the objective function
+#'
 #' @param a do not know
 #' @param A do not know
+#' @param dnom numeric vector representing the exposures (claims) used in the
+#' denominator
 #' @param g_obj objective function
 #' @param g_grad gradient function
 #' @export
-make_gradient_of_objective <- function(a, A, g_obj, g_grad) {
+make_gradient_of_objective <- function(a, A, dnom, g_obj, g_grad) {
   npar = length(a) - 2
   p = a[npar + 2]
+  size <- length(dnom)
+  # Generate a matrix to reflect exposure count in the variance structure
+  logd = log(matrix(dnom, size, size))
   Av = aperm(array(A, c(size, size, npar)), c(3, 1, 2))
   e = g_obj(a[1:npar])
   ev = aperm(array(e, c(size, size, npar)), c(3, 1, 2))

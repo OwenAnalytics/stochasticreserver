@@ -22,7 +22,8 @@
 #' @source "A Flexible Framework for Stochastic Reserving Models" found at
 #' \url{http://www.variancejournal.org/issues/07-02/123.pdf}
 "A0"
-#' dnom is count forcast for the B0 development triangle
+#' dnom is count forcast for the B0 development triangle; the exposures
+#' (claims) used in the denominator
 #' #' @format integer vector of length 10
 #' \describe{
 #' \item{B0}{count forcast for the B0 development triangle.}

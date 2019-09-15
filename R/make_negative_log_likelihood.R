@@ -7,10 +7,15 @@
 #' columns of data, the total objective function has k + size + 1 parameters
 #' @param a do not know
 #' @param A do not know
+#' @param dnom numeric vector representing the exposures (claims) used in the
+#' denominator
 #' @param g_obj objective function
 #' @export
-make_negative_log_likelihood <- function(a, A, g_obj) {
+make_negative_log_likelihood <- function(a, A, dnom, g_obj) {
   npar = length(a) - 2
+  size <- length(dnom)
+  # Generate a matrix to reflect exposure count in the variance structure
+  logd = log(matrix(dnom, size, size))
   e = g_obj(a[1:npar])
   v = exp(-outer(logd[, 1], rep(a[npar + 1], size), "-")) * (e^2)^a[npar + 2]
   t1 = log(2 * pi * v) / 2

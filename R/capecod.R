@@ -8,7 +8,6 @@
 #' row for each simulated parameter, so g_obj must be flexible enough to handle
 #' both.
 #' Here g_obj is nonlinear and based on the Kramer Chain Ladder parmaterization
-#' @param tau do not know
 #' @param B0 development triangle
 #' @param paid_to_date numeric vector of length \code{size}. It is the lower diagnal of
 #' the development triangle in row order. It represents the amount paid to date.
@@ -18,7 +17,7 @@
 #' @importFrom stats coef lm na.omit
 #' @import abind
 #' @export
-capecod <- function(tau, B0, paid_to_date, msk) {
+capecod <- function(B0, paid_to_date, msk) {
   size <- nrow(B0)
   g_obj = function(theta) {
     if (is.vector(theta))
