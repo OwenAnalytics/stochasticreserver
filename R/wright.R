@@ -12,8 +12,6 @@
 #' Wright considered two similar curves representing loss volume as a year
 #' aged, using the variable t to represent what he calls “operational time.”
 
-#' @param tau square integer matrix of \code{size} rows by \code{size} columns
-#' representing \emph{operational time}
 #' @param B0 development triangle
 #' @param paid_to_date numeric vector of length \code{size}. It is the lower diagnal of
 #' the development triangle in row order. It represents the amount paid to date.
@@ -23,8 +21,11 @@
 #' @importFrom stats coef lm na.omit
 #' @import abind
 #' @export
-wright <- function(tau, B0, paid_to_date, msk) {
+wright <- function(B0, paid_to_date, msk) {
   size <- nrow(B0)
+  # Set tau (representing operational time) to have columns with entries 1
+  # through size
+  tau = t(array((1:size), c(size, size)))
   g_obj = function(theta) {
     if (is.vector(theta))
     {

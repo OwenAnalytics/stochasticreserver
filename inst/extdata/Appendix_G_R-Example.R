@@ -654,7 +654,7 @@ summary(sim)
 summary(smn)
 
 # Scatter plots of residuals & Distribution of Forecasts
-if(graphs) {windows(title=model)
+if(graphs) {x11(title=model)
 
   # Prep data for lines for averages in scatter plots of standardized residuals
   ttt=array(cbind(c(r+c-1),c(stres)),c(length(c(stres)),2,19))

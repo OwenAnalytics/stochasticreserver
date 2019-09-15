@@ -5,12 +5,9 @@
 \title{Create list for Generalized Hoerl Curve with individual accident year levels
 (Wright's)}
 \usage{
-wright(tau, B0, paid_to_date, msk)
+wright(B0, paid_to_date, msk)
 }
 \arguments{
-\item{tau}{square integer matrix of \code{size} rows by \code{size} columns
-representing \emph{operational time}}
-
 \item{B0}{development triangle}
 
 \item{paid_to_date}{numeric vector of length \code{size}. It is the lower diagnal of

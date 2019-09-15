@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE, include = TRUE)
 ```
 ```{r load-packages}
 library(mvtnorm)
-library(MASS)
+#library(MASS)
 library(abind)
 library(stochasticreserver)
 
@@ -73,9 +73,6 @@ simulation = TRUE
 
 ```
 ```{r addional-general-code}
-# Set tau to have columns with entries 1 through size
-tau = t(array((1:size), c(size, size)))
-
 # Calculate incremental average matrix
 A0 = cbind(B0[, 1], (B0[, (2:size)] + 0 * B0[, (1:(size - 1))]) -
              (B0[, (1:(size - 1))] + 0 * B0[, (2:size)]))
@@ -109,9 +106,9 @@ paid_to_date = rowSums(B0 * msd, na.rm = TRUE)
   } else if (model == "CapeCod") {
     model_lst <- capecod(B0, paid_to_date, msk)
   } else if (model == "Hoerl") {
-    model_lst <- hoerl(tau, B0, paid_to_date, msk)
+    model_lst <- hoerl(B0, paid_to_date, msk)
   } else if (model == "Wright") {
-    model_lst <- wright(tau, B0, paid_to_date, msk)
+    model_lst <- wright(B0, paid_to_date, msk)
   } else if (model == "Chain") {
     model_lst <- chain(B0, paid_to_date, msk)
   }
@@ -446,7 +443,7 @@ if (graphs) {
                           sqrt(sum(
                             matrix(c(dnom), size, size) ^ 2 * var * !msk
                           ))))
-    truehist(sim[, 11],
+    MASS::truehist(sim[, 11],
              ymax = max(proc$y),
              main = "All Years Combined Future Amounts",
              xlab = "Aggregate")

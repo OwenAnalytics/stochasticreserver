@@ -6,7 +6,6 @@
 #' row for each simulated parameter, so g_obj must be flexible enough to handle
 #' both.
 #' Here g_obj is Wright's operational time model with trend added
-#' @param tau do not know
 #' @param B0 development triangle
 #' @param paid_to_date numeric vector of length \code{size}. It is the lower diagnal of
 #' the development triangle in row order. It represents the amount paid to date.
@@ -16,8 +15,11 @@
 #' @importFrom stats coef lm na.omit
 #' @import abind
 #' @export
-hoerl <- function(tau, B0, paid_to_date, msk) {
+hoerl <- function(B0, paid_to_date, msk) {
   size <- nrow(B0)
+  # Set tau (representing operational time) to have columns with entries 1
+  # through size
+  tau = t(array((1:size), c(size, size)))
   g_obj <- function(theta) {
     if (is.vector(theta))
     {
