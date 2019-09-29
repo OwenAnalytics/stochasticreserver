@@ -6,15 +6,21 @@ cache:
 dist: trusty
 r:
     - release
-#    - oldrel
+    - oldrel
 r_packages:
     - devtools
     - covr
     - rcmdcheck
 matrix:
      include:
-         - os: osx
+         - os:
+           - osx
+           - linux
+
            fortran: false
+  allow_failures:
+    - os: osx
+
 script:
   - R -e 'r <- rcmdcheck::rcmdcheck(".", args = c("--no-manual")); devtools::test(); quit(save = "no", status = if (length(c(r$errors, r$warnings)) > 0) { 1 } else { 0 }, runLast = FALSE)'
 after_success:
@@ -32,6 +38,3 @@ env:
   - global:
     - CI=TRUE
     - LINTR_COMMENT_BOT=false
-#os:
-#  - osx
-#  - linux
