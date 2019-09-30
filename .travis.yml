@@ -15,9 +15,8 @@ matrix:
      include:
          - os:
            - osx
+              fortran: false
            - linux
-
-           fortran: false
   allow_failures:
     - os: osx
 
