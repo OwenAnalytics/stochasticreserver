@@ -12,12 +12,11 @@ r_packages:
     - covr
     - rcmdcheck
 matrix:
-     include:
-        - os:
+     -include:
+         os: linux
          allow_failures:
-           - osx
-              fortran: false
-           - linux
+              os: osx
+         fortran: false
 
 script:
   - R -e 'r <- rcmdcheck::rcmdcheck(".", args = c("--no-manual")); devtools::test(); quit(save = "no", status = if (length(c(r$errors, r$warnings)) > 0) { 1 } else { 0 }, runLast = FALSE)'
@@ -36,3 +35,4 @@ env:
   - global:
     - CI=TRUE
     - LINTR_COMMENT_BOT=false
+## tested at http://yaml-online-parser.appspot.com
